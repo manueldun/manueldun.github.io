@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 1280px; height: 720px }
+		</style>
+		<script src="js/webgl-obj-loader.js"></script>
+	</head>
+	<body>
+		 <canvas id="c"></canvas>
+
+		<script>
+			var canvas = document.getElementById("c");
+			var gl = canvas.getContext("webgl2");
+
+			if(!gl)
+			{
+				console.log("error getting webgl2 context");
+
+			}
+			var webglStart =function (meshes)
+			{
+				gl.clearColor(0,0,1,1);
+				gl.clear(gl.COLOR_BUFFER_BIT);
+				OBJ.initMeshBuffers(gl, meshes.sponza);
+
+				console.log(meshes);
+				
+			}
+			OBJ.downloadMeshes({'sponza':'Assets/DabrovicSponza/sponza.obj'},webglStart);	
+			
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Prueba de legibilidad</title>
+		<script type="text/javascript" src="PruebaDeLegibilidad.js">
+
+		</script>
+	</head>
+	<body>
+		<textarea id="textArea"  name="textArea" rows="8" cols="80" oninput="actualizarTexto();"></textarea>
+		<script>
+			var textArea = document.getElementById("textArea");
+
+			var textNode = document.createTextNode("Número de sílabas: 0 Número de palabras: 0 Número de Oraciones: 0");
+			document.body.appendChild(textNode);
+			textArea.oninput = function actualizarTexto()
+			{
+				var numPalabras = contarPalabras(textArea.value);
+				var numSilabas = contarSilabas(textArea.value);
+				var numeroOraciones = contarOraciones(textArea.value);
+				textNode.nodeValue =
+				"Número de sílabas: "+numPalabras+
+				" Número de palabras: "+numSilabas+
+				" Número de oraciones: "+numeroOraciones+
+				" Índice de legibilidad Fernández_Huerta: "+pruebaFernandez_Huerta(numSilabas,numPalabras,numeroOraciones);
+			};
+		</script>
+	</body>
+</html>
