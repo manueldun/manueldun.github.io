@@ -8,7 +8,7 @@
 		</script>
 	</head>
 	<body>
-		<textarea id="textArea"  name="textArea" rows="8" cols="80" oninput="actualizarTexto();"></textarea>
+		<textarea id="textArea"  name="textArea" rows="8" cols="80" oninput="actualizarTexto();">Heaviside publicó sus resultados, cuya utilidad a la hora de resolver ecuaciones de la física y la ingeniería hizo que pronto se extendieran. Sin embargo, el trabajo de Heaviside, formal y poco riguroso, atrajo las críticas de algunos matemáticos puristas que los rechazaron argumentando que los resultados de Heaviside no podían surgir de tal forma. No obstante, el éxito del método hizo que pronto fuera adoptado por ingenieros y físicos de todo el mundo, de manera que al final atrajo la atención de cierto número de matemáticos tratando de justificar el método de manera rigurosa. Tras varias décadas de intentos, se descubrió que la Transformada descubierta por Laplace hacía un siglo no sólo ofrecía un fundamento teórico al método de cálculo operacional de Heaviside, sino que además ofrecía una alternativa mucho más sistemática a tales métodos.</textarea>
 		<script>
 			var textArea = document.getElementById("textArea");
 
@@ -20,8 +20,8 @@
 				var numSilabas = contarSilabas(textArea.value);
 				var numeroOraciones = contarOraciones(textArea.value);
 				textNode.nodeValue =
-				"Número de sílabas: "+numPalabras+
-				" Número de palabras: "+numSilabas+
+				"Número de sílabas: "+numSilabas+
+				" Número de palabras: "+numPalabras+
 				" Número de oraciones: "+numeroOraciones+
 				" Índice de legibilidad Fernández_Huerta: "+pruebaFernandez_Huerta(numSilabas,numPalabras,numeroOraciones);
 			};
