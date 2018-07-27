@@ -5,34 +5,22 @@
 		<title>My first three.js app</title>
 		<style>
 			body { margin: 0; }
-			canvas { width: 1280px; height: 720px }
 		</style>
+    <script src="js/glm-js.min.js" charset="utf-8"></script>
 		<script src="js/webgl-obj-loader.js"></script>
+    <script src="js/dat.gui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/dat.gui.js"></script>
+
 	</head>
 	<body>
 		 <canvas id="c"></canvas>
+		 <div id="status">
+		 	cargando...
+		 </div>
+		 <div id="variableLabel">
+		 	nada
+		 </div>
 
-		<script>
-			var canvas = document.getElementById("c");
-			var gl = canvas.getContext("webgl2");
-
-			if(!gl)
-			{
-				console.log("error getting webgl2 context");
-
-			}
-			var webglStart =function (meshes)
-			{
-				gl.clearColor(0,0,1,1);
-				gl.clear(gl.COLOR_BUFFER_BIT);
-				OBJ.initMeshBuffers(gl, meshes.sponza);
-
-				console.log(meshes);
-				
-			}
-			OBJ.downloadMeshes({'sponza':'Assets/DabrovicSponza/sponza.obj'},webglStart);	
-			
-
-		</script>
+     <script src="js/myGraphicsLib.js" charset="utf-8"></script>
 	</body>
 </html>
