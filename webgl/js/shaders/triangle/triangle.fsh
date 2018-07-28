@@ -5,10 +5,7 @@ precision mediump float;
 in vec3 interpolatingWorldSpacePosition;
 in vec3 interpolatingNormal;
 
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-uniform vec3 cameraPosition;
+
 
 
 

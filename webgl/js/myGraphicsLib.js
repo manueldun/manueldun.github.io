@@ -61,6 +61,7 @@ class GPUMesh {
   compileShader (vertexShaderPath, fragmentShaderPath) {
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     var vertexShaderSource = loadTextFile(vertexShaderPath);
+
     gl.shaderSource(vertexShader, vertexShaderSource);
     gl.compileShader(vertexShader);
 
@@ -71,7 +72,9 @@ class GPUMesh {
     }
 
     var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, loadTextFile(fragmentShaderPath));
+    var fragmentShaderSource = loadTextFile(fragmentShaderPath);
+    gl.shaderSource(fragmentShader, fragmentShaderSource);
+
     gl.compileShader(fragmentShader);
 
     if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
@@ -102,25 +105,30 @@ class GPUMesh {
     fragmentShaderPath = 'js/shaders/triangle/triangle.fsh',
     mesh) {
     var triangleVertexPosition = [
-      -0.5, -0.5, 0.0,
-      0.5, -0.5, 0.0,
-      0.0, 0.5, 0.0
+      -1.0, -1.0, 0.0,
+      1.0, -1.0, 0.0,
+      0.0, 1.0, 0.0
     ];
+
+    this.vao = gl.createVertexArray();
+    gl.bindVertexArray(this.vao);
+
     this.positionBuffer = gl.createBuffer();
-    console.log(this.positionBuffer);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertexPosition), gl.STATIC_DRAW);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 0, 0);
 
     var triangleVertexElement = [0, 1, 2];
     this.elementBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementBuffer);
-    // console.log(this.elementBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triangleVertexElement), gl.STATIC_DRAW);
+
+    gl.enableVertexAttribArray(0);// position attribute
+
+    gl.bindVertexArray(null);
 
     this.wasdControl = new WASDcontrol();
     this.compileShader(vertexShaderPath, fragmentShaderPath);
-
-    gl.enableVertexAttribArray(0);// position attribute
 
     this.modelMatrixUniform = gl.getUniformLocation(this.glslProgram, 'modelMatrix');
     this.viewMatrixUniform = gl.getUniformLocation(this.glslProgram, 'viewMatrix');
@@ -142,11 +150,8 @@ class GPUMesh {
 
     gl.enableVertexAttribArray(0);// position attribute
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-    gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementBuffer);
-    gl.drawElements(gl.TRIANGLES, 1, gl.UNSIGNED_SHORT, 0);
+    gl.bindVertexArray(this.vao);
+    gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
   }
   delete () {
     gl.deleteProgram(this.glslProgram);
