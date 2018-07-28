@@ -39,5 +39,5 @@ void main()
 	vec3 specularComponent = (specularConstant)*pow(clamp(dot(reflectionVector,viewDirection),0.0f,1.0f),shininessConstant);
 
 	resultIlumination = vec4((diffuseComponent + specularComponent*((shininessConstant+2.0f)/2.0f))*(1.0f/M_PI),1.0);
-  resultIlumination = vec4(1.0,0.0,0.0,1.0);
+
 }
