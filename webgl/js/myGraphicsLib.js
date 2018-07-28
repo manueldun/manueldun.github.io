@@ -56,10 +56,9 @@ class WASDcontrol {
     }
   }
 }
+
 class GPUMesh {
-  constructor (mesh, vertexShaderPath, fragmentShaderPath) {
-    this.mesh = mesh;
-    this.wasdControl = new WASDcontrol();
+  compileShader (vertexShaderPath, fragmentShaderPath) {
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
     var vertexShaderSource = loadTextFile(vertexShaderPath);
     gl.shaderSource(vertexShader, vertexShaderSource);
@@ -98,41 +97,40 @@ class GPUMesh {
 
     gl.deleteShader(vertexShader);
     gl.deleteShader(fragmentShader);
+  }
+  constructor (vertexShaderPath = 'js/shaders/triangle/triangle.vsh',
+    fragmentShaderPath = 'js/shaders/triangle/triangle.fsh',
+    mesh) {
+    var triangleVertexPosition = [
+      -0.5, -0.5, 0.0,
+      0.5, -0.5, 0.0,
+      0.0, 0.5, 0.0
+    ];
+    this.positionBuffer = gl.createBuffer();
+    console.log(this.positionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertexPosition), gl.STATIC_DRAW);
+
+    var triangleVertexElement = [0, 1, 2];
+    this.elementBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementBuffer);
+    // console.log(this.elementBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triangleVertexElement), gl.STATIC_DRAW);
+
+    this.wasdControl = new WASDcontrol();
+    this.compileShader(vertexShaderPath, fragmentShaderPath);
 
     gl.enableVertexAttribArray(0);// position attribute
-    gl.enableVertexAttribArray(1);// normal attribute
-    // gl.enableVertexAttribArray(2);// uv attribute
-    // gl.enableVertexAttribArray(3);// tangent attribute
-    // gl.enableVertexAttribArray(4);// bitangent attribute
 
     this.modelMatrixUniform = gl.getUniformLocation(this.glslProgram, 'modelMatrix');
     this.viewMatrixUniform = gl.getUniformLocation(this.glslProgram, 'viewMatrix');
     this.projectionMatrixUniform = gl.getUniformLocation(this.glslProgram, 'projectionMatrix');
     this.cameraPositionUniform = gl.getUniformLocation(this.glslProgram, 'cameraPosition');
 
-    this.diffuseConstantUniform = gl.getUniformLocation(this.glslProgram, 'diffuseConstant');
-    this.specularConstantUniform = gl.getUniformLocation(this.glslProgram, 'specularConstant');
-    this.ambientConstantUniform = gl.getUniformLocation(this.glslProgram, 'ambientConstant');
-    this.shininessConstantUniform = gl.getUniformLocation(this.glslProgram, 'shininessConstant');
-
     this.modelMatrix = glm.mat4(1.0);
     this.projectionMatrix = glm.perspective(glm.radians(45.0), 800.0 / 600.0, 0.1, 100.0);
-
-    this.diffuseConstant = glm.vec3(0.9, 0.9, 0.9);
-    this.specularConstant = glm.vec3(0.9, 0.9, 0.9);
-    this.ambientConstant = glm.vec3(0.1, 0.1, 0.1);
-    this.shininessConstant = new Float32Array([0.5]);
-/*
-    this.mesh.tangentsBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.tangentsBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.mesh.tangents), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(3, this.mesh.tangents.length, gl.FLOAT, false, 0, 0);
-
-    this.mesh.bitangentsBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.bitangentsBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.mesh.bitangents), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(4, this.mesh.bitangents.length, gl.FLOAT, false, 0, 0); */
   }
+
   render () {
     gl.useProgram(this.glslProgram);
 
@@ -142,31 +140,13 @@ class GPUMesh {
 
     gl.uniform3fv(this.cameraPositionUniform, this.wasdControl.position.elements);
 
-    gl.uniform3fv(this.diffuseConstantUniform, this.diffuseConstant.elements);
-    gl.uniform3fv(this.specularConstantUniform, this.specularConstant.elements);
-    gl.uniform3fv(this.ambientConstantUniform, this.ambientConstant.elements);
-    gl.uniform1fv(this.shininessConstantUniform, this.shininessConstant);
-
     gl.enableVertexAttribArray(0);// position attribute
-    gl.enableVertexAttribArray(1);// normal attribute
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.vertexBuffer);
-    gl.vertexAttribPointer(0, this.mesh.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+    gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.normalBuffer);
-    gl.vertexAttribPointer(1, this.mesh.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-/*
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.textureBuffer);
-    gl.vertexAttribPointer(2, this.mesh.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.tangentsBuffer);
-    gl.vertexAttribPointer(3, this.mesh.tangents.length, gl.FLOAT, false, 0, 0);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.bitangentsBuffer);
-    gl.vertexAttribPointer(4, this.mesh.bitangents.length, gl.FLOAT, false, 0, 0); */
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.mesh.indexBuffer);
-    gl.drawElements(gl.TRIANGLES, this.mesh.indexBuffer, gl.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementBuffer);
+    gl.drawElements(gl.TRIANGLES, 1, gl.UNSIGNED_SHORT, 0);
   }
   delete () {
     gl.deleteProgram(this.glslProgram);
@@ -200,7 +180,7 @@ OBJ.downloadMeshes({'sphere': 'Assets/sphere/sphere.obj', 'sponza': 'Assets/Dabr
   OBJ.initMeshBuffers(gl, meshes.sponza);
   OBJ.initMeshBuffers(gl, meshes.sphere);
 
-  gpuMesh = new GPUMesh(meshes.sphere, 'js/shaders/sphere/sphere.vsh', 'js/shaders/sphere/sphere.fsh');
+  gpuMesh = new GPUMesh();
 
   var startTime = null;
   var deltaTime = null;
