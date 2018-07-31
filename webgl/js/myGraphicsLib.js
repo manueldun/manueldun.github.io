@@ -18,6 +18,21 @@ function loadTextFile (path) {
   xhr.send();
   return text;
 }
+function loadGLTF (path) {
+  var scene = JSON.parse(loadTextFile(path));
+
+  var imagePath = (path.substring(0, path.lastIndexOf('/'))) + '/' + scene.images[0].name;
+  if (scene.images[0].mimeType === 'image/jpeg') {
+    imagePath += '.jpg';
+  }
+
+  var image = new Image();
+  image.onLoad = function () {
+    gl.createTexture();
+  };
+  image.src = imagePath;
+  return scene;
+}
 class WASDcontrol {
   constructor () {
     this.forwardState = 'stopped';
@@ -127,7 +142,15 @@ class GPUMesh {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.vertexNormals), gl.STATIC_DRAW);
       gl.vertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 0, 0);
-      gl.enableVertexAttribArray(1);// position attribute
+      gl.enableVertexAttribArray(1);
+    }
+
+    if (mesh.uvCoordinates !== undefined) {
+      this.uvBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.uvCoordinates), gl.STATIC_DRAW);
+      gl.vertexAttribPointer(2, 2, gl.FLOAT, gl.FALSE, 0, 0);
+      gl.enableVertexAttribArray(2);
     }
 
     this.elementBuffer = gl.createBuffer();
@@ -151,6 +174,7 @@ class GPUMesh {
 
     this.modelMatrix = glm.mat4(1.0);
     this.projectionMatrix = glm.perspective(glm.radians(45.0), 800.0 / 600.0, 0.1, 100.0);
+    this.shininessConstant = 0.1;
   }
 
   render () {
@@ -197,31 +221,44 @@ function update (deltaTime) {
 }
 
 statusLabel.innerHTML = 'Descargando escena...';
-OBJ.downloadMeshes({'sphere': 'Assets/sphere/sphere.obj', 'sponza': 'Assets/DabrovicSponza/sponza.obj'}, function (meshes) {
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-  var sphere = {vertexPosition: meshes.sphere.vertices,
-    vertexNormals: meshes.sphere.vertexNormals,
-    vertexIndices: meshes.sphere.indices
-  };
-  gpuMesh = new GPUMesh(sphere, 'js/shaders/sphere/sphere.vsh', 'js/shaders/sphere/sphere.fsh');
+OBJ.downloadMeshes(
+  {sphere: 'Assets/sphere/sphere.obj',
+    sponza: 'Assets/DabrovicSponza/sponza.obj',
+    woodenBox: 'Assets/woodenBox/woodenBox.obj'},
+  function (meshes) {
+    var woodenBox = loadGLTF('Assets/woodenBox/woodenBox.gltf');
+    console.log(woodenBox);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-  var startTime = null;
-  var deltaTime = null;
-  var lastTime = 0;
-  statusLabel.innerHTML = 'Corriendo...';
+    var sphere = {vertexPosition: meshes.sphere.vertices,
+      vertexNormals: meshes.sphere.vertexNormals,
+      vertexIndices: meshes.sphere.indices
+    };
+    var woodenBox = {vertexPosition: meshes.woodenBox.vertices,
+      vertexNormals: meshes.woodenBox.vertexNormals,
+      vertexIndices: meshes.woodenBox.indices,
+      uvCoordinates: meshes.woodenBox.textures
+    };
 
-  function loop (timestamp) {
-    if (!startTime) startTime = timestamp;
-    deltaTime = timestamp - lastTime;
-    lastTime = timestamp;
-    update(deltaTime);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gpuMesh.render();
+    gpuMesh = new GPUMesh(sphere, 'js/shaders/sphere/sphere.vsh', 'js/shaders/sphere/sphere.fsh');
+
+    var startTime = null;
+    var deltaTime = null;
+    var lastTime = 0;
+    statusLabel.innerHTML = 'Corriendo...';
+
+    function loop (timestamp) {
+      if (!startTime) startTime = timestamp;
+      deltaTime = timestamp - lastTime;
+      lastTime = timestamp;
+      update(deltaTime);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gpuMesh.render();
+      window.requestAnimationFrame(loop);
+    }
     window.requestAnimationFrame(loop);
-  }
-  window.requestAnimationFrame(loop);
-});
+  });
 
 window.onbeforeunload = function () {
   gpuMesh.delete();
@@ -266,7 +303,7 @@ canvas.addEventListener('mousemove', (event) => {
   }
 });
 var MyGUI = function () {
-  this.Shinness = 0.8;
+  this.Shinness = 0.1;
   this.Light_Intensity = 1.0;
 };
 window.onload = function () {
