@@ -1,36 +1,47 @@
-import glm from 'glm-js';
-// import gui from 'dat.GUI';
+
 var gl;
 main();
 function main () {
+  var camera = {
+    forwardDirection: glm.vec3(0.0, 0.0, 1.0),
+    position: glm.vec3(0.0, 0.0, -10.0),
+    goForward: function (delta) {
+      camera.position = camera.position['+'](camera.forwardDirection['*'](delta));
+    },
+    goRight: function (delta) {
+      var rightDirection = glm.cross(glm.vec3(0.0, 1.0, 0.0), camera.forwardDirection);
+      camera.position = camera.position['+'](rightDirection['*'](delta));
+    },
+    turnHorizontally: function (angle) {
+      var rotateMatrix = glm.rotate(angle * 0.001, glm.vec3(0.0, 1.0, 0.0));
+      camera.forwardDirection = rotateMatrix['*'](glm.vec4(camera.forwardDirection.xyz, 1.0));
+      camera.forwardDirection = glm.normalize(camera.forwardDirection.xyz);
+    },
+    turnVertically: function (angle) {
+      var rightDirection = glm.cross(glm.vec3(0.0, 1.0, 0.0), glm.vec3(0.0, 0.0, 1.0));
+      var rotateMatrix = glm.rotate(angle * 0.001, rightDirection);
+      camera.forwardDirection = rotateMatrix['*'](glm.vec4(camera.forwardDirection.xyz, 1.0));
+      camera.forwardDirection = glm.normalize(camera.forwardDirection.xyz);
+    },
+    getViewMatrix: function () {
+      positionMatrix = glm.translate(glm.mat4(1.0), camera.position);
+
+      var rightDirection = glm.cross(glm.vec3(0.0, 1.0, 0.0), camera.forwardDirection.xyz);
+      var normalizedUp = glm.cross(camera.forwardDirection, rightDirection.xyz,);
+      rotateMatrix = glm.mat4(
+        glm.vec4(rightDirection.xyz, 0.0),
+        glm.vec4(normalizedUp.xyz, 0.0),
+        glm.vec4(camera.forwardDirection.xyz, 0.0),
+        glm.vec4(0.0, 0.0, 0.0, 1.0)
+      );
+
+      viewMatrix = glm.transpose(rotateMatrix)['*'](positionMatrix);
+      return viewMatrix;
+    }
+  };
   // var statusLabel = document.getElementById('status');
   // var variableLabel = document.getElementById('variableLabel');
   var canvas = document.getElementById('c');
-
-  canvas.addEventListener('mousedown', mouseButtonDown);
-  var clickedbutton = false;
-  function mouseButtonDown (e) {
-    if (typeof e === 'object') {
-      switch (e.button) {
-        case 0:
-          clickedbutton = true;
-          break;
-        default:
-      }
-    }
-  }
-
-  canvas.addEventListener('mouseup', mouseButtonUp);
-  function mouseButtonUp (e) {
-    if (typeof e === 'object') {
-      switch (e.button) {
-        case 0:
-          clickedbutton = false;
-          break;
-        default:
-      }
-    }
-  }
 
   canvas.width = 800;
   canvas.style.width = 800;
@@ -39,8 +50,8 @@ function main () {
   gl = canvas.getContext('webgl2');
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-  var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, 'js/shaders/woodenBox/woodenBox.fsh');
-  var vertexShader = createShader(gl, gl.VERTEX_SHADER, 'js/shaders/woodenBox/woodenBox.vsh');
+  var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, 'shaders/woodenBox/woodenBox.fsh');
+  var vertexShader = createShader(gl, gl.VERTEX_SHADER, 'shaders/woodenBox/woodenBox.vsh');
 
   var program = createProgram(gl, vertexShader, fragmentShader);
 
@@ -97,18 +108,17 @@ function main () {
   var modelMatrix = glm.mat4(1.0);
 
   var viewMatrixUniform = gl.getUniformLocation(program, 'viewMatrix');
-  var cameraPosition = glm.vec3(0.0, 0.0, -10.0);
-  var viewMatrix = glm.translate(glm.mat4(1.0), cameraPosition);
+
+  var viewMatrix = glm.translate(glm.mat4(1.0), camera.position);
 
   var projectionMatrixUniform = gl.getUniformLocation(program, 'projectionMatrix');
 
-  var projectionMatrix = glm.perspective(glm.radians(35.0), 800.0 / 600.0, 0.1, 1000.0);
+  var projectionMatrix = glm.perspective(glm.radians(50.0), 800.0 / 600.0, 0.1, 1000.0);
 
-  var cameraPositionUniform = glm.getUniformLocation(program, 'cameraPosition');
+  var cameraPositionUniform = gl.getUniformLocation(program, 'cameraPosition');
 
-  console.log(cameraPositionUniform);
-
-  gl.uniform3fv(cameraPositionUniform, cameraPosition);
+  gl.useProgram(program);
+  gl.uniform3fv(cameraPositionUniform, camera.position.elements);
   gl.uniformMatrix4fv(modelMatrixUniform, true, modelMatrix.elements);
   gl.uniformMatrix4fv(viewMatrixUniform, true, viewMatrix.elements);
   gl.uniformMatrix4fv(projectionMatrixUniform, true, projectionMatrix.elements);
@@ -157,6 +167,43 @@ function main () {
     }
   );
 
+  var mouseDownX = 0.0;
+  var mouseDownY = 0.0;
+  clickedMouseButton = false;
+
+  canvas.addEventListener('mousedown', function (e) {
+    if (typeof e === 'object') {
+      switch (e.button) {
+        case 0:
+          clickedMouseButton = true;
+          mouseDownX = e.clientX;
+          mouseDownY = e.clientY;
+          console.log('down');
+          break;
+      }
+    }
+  });
+
+  canvas.addEventListener('mouseup', function (e) {
+    if (typeof e === 'object') {
+      switch (e.button) {
+        case 0:
+          clickedMouseButton = false;
+          console.log('up');
+          break;
+      }
+    }
+  });
+
+  canvas.addEventListener('mousemove', mouseButtonUp);
+  function mouseButtonUp (e) {
+    if (clickedMouseButton === true) {
+      camera.turnHorizontally(mouseDownX - e.clientX);
+      mouseDownX = e.clientX;
+      camera.turnVertically(mouseDownY - e.clientY);
+      mouseDownY = e.clientY;
+    }
+  }
   window.requestAnimationFrame(draw);
 
   var now = null;
@@ -185,27 +232,21 @@ function main () {
     gl.uniform1i(samplerUniform, 0);
 
     if (keyW === true) {
-      cameraPosition = cameraPosition['+'](glm.vec3(0.0, 0.0, delta * 0.01));
-      viewMatrix = glm.translate(glm.mat4(1.0), cameraPosition);
+      camera.goForward(delta * 0.01);
     }
     if (keyS === true) {
-      cameraPosition = cameraPosition['-'](glm.vec3(0.0, 0.0, delta * 0.01));
-      viewMatrix = glm.translate(glm.mat4(1.0), cameraPosition);
+      camera.goForward(-delta * 0.01);
     }
     if (keyD === true) {
-      cameraPosition = cameraPosition['+'](glm.vec3(delta * 0.01, 0.0, 0.0));
-      console.log(cameraPosition);
-      viewMatrix = glm.translate(glm.mat4(1.0), cameraPosition);
+      camera.goRight(-delta * 0.01);
     }
     if (keyA === true) {
-      cameraPosition = cameraPosition['-'](glm.vec3(delta * 0.01, 0.0, 0.0));
-      console.log(cameraPosition);
-      viewMatrix = glm.translate(glm.mat4(1.0), cameraPosition);
+      camera.goRight(delta * 0.01);
     }
 
-    gl.uniform3fv(cameraPositionUniform, cameraPosition.elements);
+    gl.uniform3fv(cameraPositionUniform, camera.position.elements);
     gl.uniformMatrix4fv(modelMatrixUniform, true, modelMatrix.elements);
-    gl.uniformMatrix4fv(viewMatrixUniform, true, viewMatrix.elements);
+    gl.uniformMatrix4fv(viewMatrixUniform, true, camera.getViewMatrix().elements);
     gl.uniformMatrix4fv(projectionMatrixUniform, true, projectionMatrix.elements);
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -223,10 +264,10 @@ function getString (path, onReady) {
 function createShader (gl, type, path) {
   var source;
   if (type === gl.VERTEX_SHADER) {
-    source = getString('js/shaders/woodenBox/woodenBox.vsh');
+    source = getString('shaders/woodenBox/woodenBox.vsh');
   }
   if (type === gl.FRAGMENT_SHADER) {
-    source = getString('js/shaders/woodenBox/woodenBox.fsh');
+    source = getString('shaders/woodenBox/woodenBox.fsh');
   }
 
   var shader = gl.createShader(type);
