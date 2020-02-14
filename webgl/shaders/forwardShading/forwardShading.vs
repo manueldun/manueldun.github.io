@@ -19,9 +19,9 @@ uniform vec3 cameraPosition;
 
 void main()
 {
-  mat4 mvp = viewMatrix*projectionMatrix*modelMatrix;
+  mat4 mvp = projectionMatrix*viewMatrix*modelMatrix;
   v_uv = uv;
   v_normal = normal;
-  v_cameraPosition = (vec4(cameraPosition,1.0)*mvp).xyz;
-	gl_Position = vec4(position,1.0f)*mvp;
+  v_cameraPosition = (mvp*vec4(cameraPosition,1.0)).xyz;
+	gl_Position = mvp*vec4(position,1.0f);
 }
