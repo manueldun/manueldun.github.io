@@ -201,19 +201,19 @@ function getShadowMapDraw(gl, model) {
 
   var uniforms = [];
   uniforms.push(new UniformObject(modelMatrixUniform, modelMatrix.elements, function () {
-    gl.uniformMatrix4fv(this.uniform, true, this.data);
+    gl.uniformMatrix4fv(this.uniform, false, this.data);
   }));
 
   uniforms.push(new UniformObject(viewMatrixUniform, viewMatrix.elements, function () {
-    gl.uniformMatrix4fv(this.uniform, true, this.data);
+    gl.uniformMatrix4fv(this.uniform, false, this.data);
   }));
 
   uniforms.push(new UniformObject(projectionMatrixUniform, projectionMatrix.elements, function () {
-    gl.uniformMatrix4fv(this.uniform, true, this.data);
+    gl.uniformMatrix4fv(this.uniform, false, this.data);
   }));
   return function () {
-    gl.viewport(0,0,1042,1024);
-    
+    gl.viewport(0, 0, 1042, 1024);
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
     model.draw(gl, program, uniforms);
   }

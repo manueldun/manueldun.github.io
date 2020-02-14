@@ -1,37 +1,72 @@
 var Camera = {
-  forwardDirection: glm.vec3(-1.0, 0.0, 0.0),
-  position: glm.vec3(0.0, -10.0, 0.0),
+  forwardDirection: glMatrix.vec3.fromValues(-1, 0, 0),
+  position: glMatrix.vec3.fromValues(0, -10, 0),
   goForward: function (delta) {
-    Camera.position = Camera.position['+'](Camera.forwardDirection['*'](delta));
+    var displacement = glMatrix.vec3.create();
+    glMatrix.vec3.mul(displacement, Camera.forwardDirection, [delta, delta, delta]);
+    glMatrix.vec3.add(Camera.position, Camera.position, displacement);
   },
   goRight: function (delta) {
-    var rightDirection = glm.cross(glm.vec3(0.0, 1.0, 0.0), Camera.forwardDirection.xyz);
-    Camera.position = Camera.position['+'](rightDirection['*'](delta));
+    var rightDirection = glMatrix.vec3.create();
+    var normalizedRightDirection = glMatrix.vec3.create();
+    var displacement = glMatrix.vec3.create();
+    glMatrix.vec3.cross(rightDirection, [0, 1, 0], Camera.forwardDirection);
+    glMatrix.vec3.normalize(normalizedRightDirection, rightDirection);
+    glMatrix.vec3.mul(displacement, normalizedRightDirection, [delta, delta, delta]);
+    glMatrix.vec3.add(Camera.position, Camera.position, displacement);
   },
   turnHorizontally: function (angle) {
-    var rotateMatrix = glm.rotate(angle * 0.01, glm.vec3(0.0, 1.0, 0.0));
-    Camera.forwardDirection = rotateMatrix['*'](glm.vec4(Camera.forwardDirection.xyz, 1.0));
-    Camera.forwardDirection = glm.normalize(Camera.forwardDirection.xyz);
+
+    var rotationMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.fromRotation(rotationMatrix, angle * 0.01, [0, 1, 0]);
+
+    var cameraDirectionVec4 = glMatrix.vec4.fromValues(Camera.forwardDirection[0], Camera.forwardDirection[1], Camera.forwardDirection[2], 1);
+    glMatrix.vec4.transformMat4(cameraDirectionVec4, cameraDirectionVec4, rotationMatrix);
+    Camera.forwardDirection = glMatrix.vec3.fromValues(cameraDirectionVec4[0], cameraDirectionVec4[1], cameraDirectionVec4[2]);
+
   },
   turnVertically: function (angle) {
-    var rightDirection = glm.normalize(glm.cross(glm.vec3(0.0, 1.0, 0.0), Camera.forwardDirection.xyz));
-    var rotateMatrix = glm.rotate(angle * 0.01, rightDirection);
-    Camera.forwardDirection = rotateMatrix['*'](glm.vec4(Camera.forwardDirection.xyz, 1.0));
-    Camera.forwardDirection = glm.normalize(Camera.forwardDirection.xyz);
+
+    var rightDirection = glMatrix.vec3.create();
+    glMatrix.vec3.cross(rightDirection, [0, 1, 0], Camera.forwardDirection);
+    glMatrix.vec3.normalize(rightDirection, rightDirection);
+
+    var rotationMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.rotate(rotationMatrix, rotationMatrix, angle * 0.01, rightDirection);
+
+    var cameraDirectionVec4 = glMatrix.vec4.fromValues(
+      Camera.forwardDirection[0], Camera.forwardDirection[1], Camera.forwardDirection[2], 1.0);
+
+    glMatrix.vec4.transformMat4(cameraDirectionVec4, cameraDirectionVec4, rotationMatrix);
+
+    Camera.forwardDirection = glMatrix.vec3.fromValues(
+      cameraDirectionVec4[0], cameraDirectionVec4[1], cameraDirectionVec4[2])
+
   },
   getViewMatrix: function () {
-    positionMatrix = glm.translate(glm.mat4(1.0), Camera.position);
 
-    var rightDirection = glm.normalize(glm.cross(glm.vec3(0.0, 1.0, 0.0), Camera.forwardDirection.xyz));
-    var normalizedUp = glm.normalize(glm.cross(Camera.forwardDirection, rightDirection.xyz));
-    rotateMatrix = glm.mat4(
-      glm.vec4(rightDirection.xyz, 0.0),
-      glm.vec4(normalizedUp.xyz, 0.0),
-      glm.vec4(Camera.forwardDirection.xyz, 0.0),
-      glm.vec4(0.0, 0.0, 0.0, 1.0)
+    var rightDirection = glMatrix.vec3.create();
+    glMatrix.vec3.cross(rightDirection, [0, 1, 0], Camera.forwardDirection);
+    glMatrix.vec3.normalize(rightDirection, rightDirection);
+
+    var upDirection = glMatrix.vec3.create();
+    glMatrix.vec3.cross(upDirection, Camera.forwardDirection, rightDirection);
+    glMatrix.vec3.normalize(upDirection, upDirection);
+
+    var translateMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.translate(translateMatrix, translateMatrix, Camera.position);
+
+    var rotationMatrix = glMatrix.mat4.fromValues(
+      rightDirection[0], rightDirection[1], rightDirection[2], 0,
+      upDirection[0], upDirection[1], upDirection[2], 0,
+      Camera.forwardDirection[0], Camera.forwardDirection[1], Camera.forwardDirection[2], 0,
+      0, 0, 0, 1
     );
+    glMatrix.mat4.transpose(rotationMatrix, rotationMatrix);
 
-    viewMatrix = glm.transpose(rotateMatrix)['*'](positionMatrix);
+    var viewMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.mul(viewMatrix, rotationMatrix, translateMatrix);
+
     return viewMatrix;
   }
 };
