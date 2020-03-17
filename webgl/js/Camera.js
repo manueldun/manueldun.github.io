@@ -1,6 +1,6 @@
 var Camera = {
   forwardDirection: glMatrix.vec3.fromValues(-1, 0, 0),
-  position: glMatrix.vec3.fromValues(0, -10, 0),
+  position: glMatrix.vec3.fromValues(10, -5, 0),
   goForward: function (delta) {
     var displacement = glMatrix.vec3.create();
     glMatrix.vec3.mul(displacement, Camera.forwardDirection, [delta, delta, delta]);

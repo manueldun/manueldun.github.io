@@ -4,20 +4,32 @@
 		<meta charset=utf-8>
 		<title>3d stuff</title>
 		<style>
-			body { margin: 0; }
+			body { 
+				margin: 0;
+				display: flex;
+				align-items: center;
+    			justify-content: center;
+				 }
+			canvas { 
+				display:block;
+				width: 1280px; 
+				height: 720px;
+			}
 		</style>
 
 	</head>
 	<body>
 		<canvas id="c" width="640" height="480"></canvas>
 
-		<script src="js/gl-matrix.js"></script>
+		<script src="js/createShadowMap.js"></script>
+		<script src="js/UniformObject.js"></script>
 		<script src="js/loadJSONmodel.js"></script>
+		<script src="js/gl-matrix.js"></script>
 		<script src="js/webgl-obj-loader.js"></script>
 		<script src="js/Camera.js"></script>
 		<script src="js/inputLogic.js"></script>
 		<script src="js/Shaders.js"></script>
 		<script src="js/toolkit.js"></script>
-		<script src="js/main.js"></script>
+		<script type="module" src="js/main.js"></script>
 	</body>
 </html>

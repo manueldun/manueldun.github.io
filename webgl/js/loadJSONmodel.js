@@ -49,10 +49,10 @@ function loadJSONmodel(gl, path) {
     models.push(model);
   }
   model.draw = function (gl, program, uniforms) {
+    gl.useProgram(program);
     for (uniform of uniforms) {
       uniform.setUniform();
     }
-    gl.useProgram(program);
     for (var i in models) {
       gl.bindVertexArray(models[i].vao);
 
@@ -94,9 +94,9 @@ function loadOBJModel(gl, path, OBJFilename, MTLFilename) {
   var objStr = getString(path.concat("/").concat(OBJFilename));
   var importedMeshData = new OBJ.Mesh(objStr);
   //importedMeshData.calculateTangentsAndBitangents();
-
-  console.log(importedMeshData);
   
+  console.log(importedMeshData);
+
 
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -123,14 +123,14 @@ function loadOBJModel(gl, path, OBJFilename, MTLFilename) {
     var drawData = {};
     var materialName = importedMeshData.materialNames[i]
 
-    
+
     var difuseFileName = importedMaterialData.materials[materialName].mapDiffuse.filename;
 
-    
+
     var difuseMapFullPath = path.concat("/").concat(difuseFileName);
- 
+
     var diffuseTexture = loadImage(gl, difuseMapFullPath);
-    drawData.glDiffuseTexture= diffuseTexture;
+    drawData.glDiffuseTexture = diffuseTexture;
 
     const vao = gl.createVertexArray();
     gl.bindVertexArray(vao);
@@ -155,7 +155,7 @@ function loadOBJModel(gl, path, OBJFilename, MTLFilename) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(importedMeshData.indicesPerMaterial[i]), gl.STATIC_DRAW);
 
-    
+
     model.drawDatas.push(drawData);
   }
 
@@ -170,18 +170,29 @@ function loadOBJModel(gl, path, OBJFilename, MTLFilename) {
 
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, data.glDiffuseTexture);
-      
+
 
       gl.bindVertexArray(data.vao);
       gl.drawElements(gl.TRIANGLES, data.numberOfIndices, gl.UNSIGNED_SHORT, 0);
 
     }
-
-    //gl.activeTexture(gl.TEXTURE0);
-    //gl.bindTexture(gl.TEXTURE_2D, model[i].diffuseTexture);
-
-
   };
 
   return model;
 }
+
+function doenloadOBJmeshes(gl, path) {
+  let mesh;
+  Obj.downloadMeshes({
+    'sponza': path, function(meshes) {
+      mesh = meshes.sponza;
+      OBJ.initMeshBuffers(gl, mesh);
+    }
+  });
+  mesh.draw = function (gl) {
+
+  };
+  return mesh;
+
+}
+
