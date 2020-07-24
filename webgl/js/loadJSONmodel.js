@@ -48,7 +48,10 @@ function loadJSONmodel(gl, path) {
     }
     models.push(model);
   }
-  model.draw = function (gl, program, uniforms) {
+  model.draw = function (gl, program, uniforms,width,height,framebuffer) {
+    gl.enable(gl.DEPTH_TEST);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);    
+    gl.viewport(0,0,width,height);
     gl.useProgram(program);
     for (uniform of uniforms) {
       uniform.setUniform();

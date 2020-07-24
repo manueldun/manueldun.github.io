@@ -1,5 +1,5 @@
 // initialize input logic, returns functions to be executed per frame
-function initInputLogic(Camera) {
+function initInputLogic(Camera,canvas) {
     var keyW = false;
     var keyS = false;
     var keyA = false;
@@ -24,7 +24,7 @@ function initInputLogic(Camera) {
         }
       });
   
-    window.addEventListener('keyup',
+      window.addEventListener('keyup',
       function moveForward(e) {
         switch (e.code) {
           case 'KeyW':
@@ -47,7 +47,7 @@ function initInputLogic(Camera) {
     var mouseDownY = 0.0;
     clickedMouseButton = false;
   
-    window.addEventListener('mousedown', function (e) {
+    canvas.addEventListener('mousedown', function (e) {
       if (typeof e === 'object') {
         switch (e.button) {
           case 0:
@@ -59,7 +59,7 @@ function initInputLogic(Camera) {
       }
     });
   
-    window.addEventListener('mouseup', function (e) {
+    canvas.addEventListener('mouseup', function (e) {
       if (typeof e === 'object') {
         switch (e.button) {
           case 0:
@@ -69,7 +69,7 @@ function initInputLogic(Camera) {
       }
     });
   
-    window.addEventListener('mousemove', mouseButtonUp);
+    canvas.addEventListener('mousemove', mouseButtonUp);
     function mouseButtonUp(e) {
       if (clickedMouseButton === true) {
         Camera.turnHorizontally(mouseDownX - e.clientX);

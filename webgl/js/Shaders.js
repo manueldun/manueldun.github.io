@@ -1,5 +1,11 @@
 
-// create glsl program
+function createShaderFromSource(gl,vertexShaderString,fragmentShaderString)
+{
+  const vertexShader = createShader(gl,gl.VERTEX_SHADER,vertexShaderString);
+  const fragmentShader = createShader(gl,gl.FRAGMENT_SHADER,fragmentShaderString);
+  return createProgram(gl,vertexShader,fragmentShader);
+
+}
 function createProgram(gl, vertexShader, fragmentShader) {
   var program = gl.createProgram();
   gl.attachShader(program, vertexShader);

@@ -1,5 +1,5 @@
 var Camera = {
-  forwardDirection: glMatrix.vec3.fromValues(-1, 0, 0),
+  forwardDirection: glMatrix.vec3.fromValues(-  1, 0, 0),
   position: glMatrix.vec3.fromValues(10, -5, 0),
   goForward: function (delta) {
     var displacement = glMatrix.vec3.create();

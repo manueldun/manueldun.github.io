@@ -1,15 +1,9 @@
 #version 300 es
+precision mediump float;
 
 layout(location=0)in vec3 position;
 
-
-
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-
 void main()
 {
-    mat4 mvp = viewMatrix*projectionMatrix*modelMatrix;
-    
+    gl_Position = vec4(position.xyz,1.0);
 }
