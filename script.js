@@ -95,11 +95,7 @@ class Digit3D {
       this.position[1] = 1;
     }
 
-    if (this.position[2] >= 1) {
-      this.position[2] = -1;
-    } else if (this.position[1] <= -1) {
-      this.position[2] = 1;
-    }
+
     return this.position;
 
   }
