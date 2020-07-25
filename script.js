@@ -123,7 +123,7 @@ function animar() {
     void main()
     {
         v_normal=(u_rotationMatrix*vec4(a_normal,1.0)).xyz;
-        gl_Position=(u_rotationMatrix*vec4(((a_position)*0.1),1.0))*vec4(u_aspectRatio,1.0,1.0,1.0)+vec4(u_objectPosition,0.0);
+        gl_Position=(u_rotationMatrix*vec4(((a_position)*0.2),1.0))*vec4(u_aspectRatio,1.0,1.0,1.0)+vec4(u_objectPosition,0.0);
     }`;
 
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
