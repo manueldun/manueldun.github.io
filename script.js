@@ -83,16 +83,16 @@ class Digit3D {
     this.position[2] += this.speed[2] * delta * 0.0001;
 
 
-    if (this.position[0] >= 1) {
-      this.position[0] = -1;
-    } else if (this.position[0] <= -1) {
-      this.position[0] = 1;
+    if (this.position[0] >= 1.2) {
+      this.position[0] = -1.2;
+    } else if (this.position[0] <= -1.2) {
+      this.position[0] = 1.2;
     }
 
-    if (this.position[1] >= 1) {
-      this.position[1] = -1;
-    } else if (this.position[1] <= -1) {
-      this.position[1] = 1;
+    if (this.position[1] >= 1.2) {
+      this.position[1] = -1.2;
+    } else if (this.position[1] <= -1.2) {
+      this.position[1] = 1.2;
     }
 
 
@@ -123,7 +123,7 @@ function animar() {
     void main()
     {
         v_normal=(u_rotationMatrix*vec4(a_normal,1.0)).xyz;
-        gl_Position=(u_rotationMatrix*vec4(((a_position)*0.2),1.0))*vec4(u_aspectRatio,1.0,1.0,1.0)+vec4(u_objectPosition,0.0);
+        gl_Position=(u_rotationMatrix*vec4(((a_position)*0.3),1.0))*vec4(u_aspectRatio,1.0,1.0,1.0)+vec4(u_objectPosition,0.0);
     }`;
 
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -216,39 +216,6 @@ function animar() {
 
 
 
-    const positionSizezero = 3;
-    const positionTypezero = gl.FLOAT;
-    const positionNormalizezero = false;
-    const positionStridezero = 0;
-    const positionOffsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].attributes.POSITION].byteOffset;
-
-    console.log(positionOffsetzero);
-
-    gl.vertexAttribPointer(
-      positionAttributeLocation,
-      positionSizezero,
-      positionTypezero,
-      positionNormalizezero,
-      positionStridezero,
-      positionOffsetzero
-    );
-
-
-    const normalSizezero = 3;
-    const normalTypezero = gl.FLOAT;
-    const normalNormalizezero = false;
-    const normalStridezero = 0;
-    const normalOffsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].attributes.NORMAL].byteOffset;
-
-    gl.vertexAttribPointer(
-      normalAttributeLocation,
-      normalSizezero,
-      normalTypezero,
-      normalNormalizezero,
-      normalStridezero,
-      normalOffsetzero
-    );
-
     const indexBufferzero = gl.createBuffer()
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBufferzero);
 
@@ -256,7 +223,7 @@ function animar() {
     let sizezero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].indices].byteLength;
     console.log(offsetzero);
     console.log(sizezero);
-    const indexBufferzeroSlice = zeroBuffers[0].slice(34776, 34776 + 13824);
+    const indexBufferzeroSlice = zeroBuffers[0].slice(offsetzero, offsetzero + sizezero);
 
     console.log(new Uint16Array(indexBufferzeroSlice));
 
@@ -273,36 +240,7 @@ function animar() {
 
 
 
-    const positionSizeone = 3;
-    const positionTypeone = gl.FLOAT;
-    const positionNormalizeone = false;
-    const positionStrideone = 0;
-    const positionOffsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].attributes.POSITION].byteOffset;
 
-    gl.vertexAttribPointer(
-      positionAttributeLocation,
-      positionSizeone,
-      positionTypeone,
-      positionNormalizeone,
-      positionStrideone,
-      positionOffsetone
-    );
-
-
-    const normalSizeone = 3;
-    const normalTypeone = gl.FLOAT;
-    const normalNormalizeone = false;
-    const normalStrideone = 0;
-    const normalOffsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].attributes.NORMAL].byteOffset;
-    console.log(normalOffsetone);
-    gl.vertexAttribPointer(
-      normalAttributeLocation,
-      normalSizeone,
-      normalTypeone,
-      normalNormalizeone,
-      normalStrideone,
-      normalOffsetone
-    );
 
     const indexBufferone = gl.createBuffer()
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBufferone);
@@ -310,7 +248,7 @@ function animar() {
     let offsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteOffset;
     let sizeone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteLength;
     const indexBufferoneSlice = oneBuffers[0].slice(offsetone, offsetone + sizeone);
-      console.log(new Uint16Array(indexBufferoneSlice));
+    console.log(new Uint16Array(indexBufferoneSlice));
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexBufferoneSlice, gl.STATIC_DRAW);
 
     let digits = [];
@@ -332,7 +270,13 @@ function animar() {
 
         gl.uniformMatrix4fv(rotationMatrixUniform, false, digit.getRotation(Date.now()));
         if (digit.digit === 0) {
+
           gl.bindBuffer(gl.ARRAY_BUFFER, zeroBuffer);
+          const positionSizezero = 3;
+          const positionTypezero = gl.FLOAT;
+          const positionNormalizezero = false;
+          const positionStridezero = 0;
+          const positionOffsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].attributes.POSITION].byteOffset;
           gl.vertexAttribPointer(
             positionAttributeLocation,
             positionSizezero,
@@ -367,7 +311,7 @@ function animar() {
 
         }
         else {
-          
+
           gl.bindBuffer(gl.ARRAY_BUFFER, oneBuffer);
           const positionSizeone = 3;
           const positionTypeone = gl.FLOAT;
