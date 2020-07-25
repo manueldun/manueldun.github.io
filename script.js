@@ -82,7 +82,7 @@ class Digit3D {
     this.position[1] += this.speed[1] * delta * 0.0001;
     this.position[2] += this.speed[2] * delta * 0.0001;
 
-    
+
     if (this.position[0] >= 1) {
       this.position[0] = -1;
     } else if (this.position[0] <= -1) {
@@ -178,104 +178,247 @@ function animar() {
   let rotationMatrixUniform = gl.getUniformLocation(program, "u_rotationMatrix");
   let objecPositionUniform = gl.getUniformLocation(program, "u_objectPosition");
 
-  let jsonObjectZero;
-  let arrayOfBuffersZero = [];
-  let jsonObjectOne;
-  let arrayOfBuffersOne = [];
 
-  getStringFile("/assets/", "cero.gltf").
-    then((jsonObjectText) => {
-      jsonObjectZero = JSON.parse(jsonObjectText);
+  async function loadData() {
+    const zeroObject = JSON.parse(await getStringFile("/assets/", "cero.gltf"));
+    const oneObject = JSON.parse(await getStringFile("/assets/", "uno.gltf"));
 
-      for (const buffer of jsonObjectZero.buffers) {
-        arrayOfBuffersZero.push(getBinaryFile("/assets/", buffer.uri));
-      }
-      return arrayOfBuffersZero;
-    }).then((arrayOfBuffers) => {
-      Promise.all(arrayOfBuffers).then((buffers) => {
+    const zeroBufferUris = zeroObject.buffers.map((buffer) => {
+      return buffer.uri;
+    });
+    const oneBufferUris = oneObject.buffers.map((buffer) => {
+      return buffer.uri;
+    });
 
-        let buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, buffers[0], gl.STATIC_DRAW);
+    let zeroBuffers = [];
+    for (let i = 0; i < zeroBufferUris.length; i++) {
+      zeroBuffers.push(await getBinaryFile("/assets/", zeroBufferUris[i]));
 
-        gl.clearColor(0.004, 0.055, 0, 1);
+    }
 
-        gl.enableVertexAttribArray(positionAttributeLocation);
-        gl.enableVertexAttribArray(normalAttributeLocation);
+    let oneBuffers = [];
+    for (let i = 0; i < oneBufferUris.length; i++) {
+      oneBuffers.push(await getBinaryFile("/assets/", oneBufferUris[i]));
+    }
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    console.log(oneObject);
 
 
-        var size = 3;
-        var type = gl.FLOAT;
-        var normalize = false;
-        var stride = 0;
-        var offset = 0;
-        gl.vertexAttribPointer(
-          positionAttributeLocation,
-          size,
-          type,
-          normalize,
-          stride,
-          offset
-        );
+    gl.clearColor(0.004, 0.055, 0, 1);
+
+    let zeroBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, zeroBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, zeroBuffers[0], gl.STATIC_DRAW);
 
 
-        var size = 3;
-        var type = gl.FLOAT;
-        var normalize = false;
-        var stride = 0;
-        var offset = 17388;
-        gl.vertexAttribPointer(
-          normalAttributeLocation,
-          size,
-          type,
-          normalize,
-          stride,
-          offset
-        );
+    gl.enableVertexAttribArray(positionAttributeLocation);
+    gl.enableVertexAttribArray(normalAttributeLocation);
 
-        const indexBuffer = gl.createBuffer()
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, buffers[0].slice(34776, 34776 + 13824), gl.STATIC_DRAW);
 
-        
-        let digits = [];
 
-        for (let i = 0; i < 30; i++) {
-          digits.push(new Digit3D());
+    const positionSizezero = 3;
+    const positionTypezero = gl.FLOAT;
+    const positionNormalizezero = false;
+    const positionStridezero = 0;
+    const positionOffsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].attributes.POSITION].byteOffset;
+
+    console.log(positionOffsetzero);
+
+    gl.vertexAttribPointer(
+      positionAttributeLocation,
+      positionSizezero,
+      positionTypezero,
+      positionNormalizezero,
+      positionStridezero,
+      positionOffsetzero
+    );
+
+
+    const normalSizezero = 3;
+    const normalTypezero = gl.FLOAT;
+    const normalNormalizezero = false;
+    const normalStridezero = 0;
+    const normalOffsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].attributes.NORMAL].byteOffset;
+
+    gl.vertexAttribPointer(
+      normalAttributeLocation,
+      normalSizezero,
+      normalTypezero,
+      normalNormalizezero,
+      normalStridezero,
+      normalOffsetzero
+    );
+
+    const indexBufferzero = gl.createBuffer()
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBufferzero);
+
+    let offsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].indices].byteOffset;
+    let sizezero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].indices].byteLength;
+    console.log(offsetzero);
+    console.log(sizezero);
+    const indexBufferzeroSlice = zeroBuffers[0].slice(34776, 34776 + 13824);
+
+    console.log(new Uint16Array(indexBufferzeroSlice));
+
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexBufferzeroSlice, gl.STATIC_DRAW);
+
+
+    const oneBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, oneBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, oneBuffers[0], gl.STATIC_DRAW);
+
+
+    gl.enableVertexAttribArray(positionAttributeLocation);
+    gl.enableVertexAttribArray(normalAttributeLocation);
+
+
+
+    const positionSizeone = 3;
+    const positionTypeone = gl.FLOAT;
+    const positionNormalizeone = false;
+    const positionStrideone = 0;
+    const positionOffsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].attributes.POSITION].byteOffset;
+
+    gl.vertexAttribPointer(
+      positionAttributeLocation,
+      positionSizeone,
+      positionTypeone,
+      positionNormalizeone,
+      positionStrideone,
+      positionOffsetone
+    );
+
+
+    const normalSizeone = 3;
+    const normalTypeone = gl.FLOAT;
+    const normalNormalizeone = false;
+    const normalStrideone = 0;
+    const normalOffsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].attributes.NORMAL].byteOffset;
+    console.log(normalOffsetone);
+    gl.vertexAttribPointer(
+      normalAttributeLocation,
+      normalSizeone,
+      normalTypeone,
+      normalNormalizeone,
+      normalStrideone,
+      normalOffsetone
+    );
+
+    const indexBufferone = gl.createBuffer()
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBufferone);
+
+    let offsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteOffset;
+    let sizeone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteLength;
+    const indexBufferoneSlice = oneBuffers[0].slice(offsetone, offsetone + sizeone);
+      console.log(new Uint16Array(indexBufferoneSlice));
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexBufferoneSlice, gl.STATIC_DRAW);
+
+    let digits = [];
+
+    for (let i = 0; i < 50; i++) {
+      digits.push(new Digit3D());
+
+    }
+
+    const update = () => {
+
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+      gl.useProgram(program);
+
+      gl.uniform1f(aspectRatioUniform, canvas.clientHeight / canvas.clientWidth);
+      for (const digit of digits) {
+        gl.uniform3fv(objecPositionUniform, digit.getPosition(Date.now()));
+
+        gl.uniformMatrix4fv(rotationMatrixUniform, false, digit.getRotation(Date.now()));
+        if (digit.digit === 0) {
+          gl.bindBuffer(gl.ARRAY_BUFFER, zeroBuffer);
+          gl.vertexAttribPointer(
+            positionAttributeLocation,
+            positionSizezero,
+            positionTypezero,
+            positionNormalizezero,
+            positionStridezero,
+            positionOffsetzero
+          );
+
+
+          const normalSizezero = 3;
+          const normalTypezero = gl.FLOAT;
+          const normalNormalizezero = false;
+          const normalStridezero = 0;
+          const normalOffsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].attributes.NORMAL].byteOffset;
+
+          gl.vertexAttribPointer(
+            normalAttributeLocation,
+            normalSizezero,
+            normalTypezero,
+            normalNormalizezero,
+            normalStridezero,
+            normalOffsetzero
+          );
+          gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBufferzero);
+
+          var primitiveType = gl.TRIANGLES;
+          var count = 6912;
+          let indexType = gl.UNSIGNED_SHORT;
+          var offset = 0;
+          gl.drawElements(primitiveType, count, indexType, offset);
+
+        }
+        else {
+          
+          gl.bindBuffer(gl.ARRAY_BUFFER, oneBuffer);
+          const positionSizeone = 3;
+          const positionTypeone = gl.FLOAT;
+          const positionNormalizeone = false;
+          const positionStrideone = 0;
+          const positionOffsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].attributes.POSITION].byteOffset;
+
+          gl.vertexAttribPointer(
+            positionAttributeLocation,
+            positionSizeone,
+            positionTypeone,
+            positionNormalizeone,
+            positionStrideone,
+            positionOffsetone
+          );
+
+
+          const normalSizeone = 3;
+          const normalTypeone = gl.FLOAT;
+          const normalNormalizeone = false;
+          const normalStrideone = 0;
+          const normalOffsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].attributes.NORMAL].byteOffset;
+
+          gl.vertexAttribPointer(
+            normalAttributeLocation,
+            normalSizeone,
+            normalTypeone,
+            normalNormalizeone,
+            normalStrideone,
+            normalOffsetone
+          );
+
+
+
+          gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBufferone);
+
+          var primitiveType = gl.TRIANGLES;
+          var count = 276;
+          let indexType = gl.UNSIGNED_SHORT;
+          var offset = 0;
+          gl.drawElements(primitiveType, count, indexType, offset);
 
         }
 
-        const update = () => {
+      }
+      window.requestAnimationFrame(update);
+    };
+    update();
+  };
 
-          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-          gl.useProgram(program);
-
-          gl.uniform1f(aspectRatioUniform, canvas.clientHeight / canvas.clientWidth);
-          gl.uniform1f(aspectRatioUniform, canvas.clientHeight / canvas.clientWidth);
-          for (const digit of digits) {
-            gl.uniform3fv(objecPositionUniform, digit.getPosition(Date.now()));
-
-            gl.uniformMatrix4fv(rotationMatrixUniform, false, digit.getRotation(Date.now()));
-
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-
-            var primitiveType = gl.TRIANGLES;
-            var offset = 0;
-            var count = 6912;
-            let indexType = gl.UNSIGNED_SHORT;
-            gl.drawElements(primitiveType, count, indexType, offset);
-          }
-          window.requestAnimationFrame(update);
-        };
-
-        update();
-      }).then(()=>{
-        
-      });
-    });
+  loadData();
 };
 window.onload = animar;
 
