@@ -1,12 +1,4 @@
-export function loadGLTF2(gl, gltfFile,gltfbuffers) {
 
-    
-}
-export function loadGLTFfiles(path, filename)
-{
-    //return {gltfObjectPromise:gltfObjectPromise,gltfBuffersPromise:gltfBuffersPromise};
-
-}
 export function getStringFile(path,fileName) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
