@@ -1,38 +1,5 @@
 import { getStringFile, getBinaryFile } from "./loadGLTF/loadGLTF.js";
-function rotationMatrixX(angle) {
-  return new Float32Array([
-    1, 0, 0, 0,
-    0, Math.cos(angle), -Math.cos(angle), 0,
-    0, Math.sin(angle), Math.sin(angle), 0,
-    0, 0, 0, 1]);
-}
-function rotationMatrixY(angle) {
-  return new Float32Array(
-    [
-      Math.cos(angle), 0, Math.sin(angle), 0,
-      0, 1, 0, 0,
-      -Math.sin(angle), 0, Math.cos(angle), 0,
-      0, 0, 0, 1
-    ]);
-}
-function matrizDeRotacionZ(angle) {
-  return new Float32Array(
-    [
-      Math.cos(angle), -Math.sin(angle), 0, 0,
-      Math.sin(angle), -Math.cos(angle), 0,
-      0, 0, 1, 0,
-      0, 0, 0, 1
-    ]);
-}
-function rotationMatrixXY(angleA, angleB) {
-  return new Float32Array([
-    Math.cos(angleA), 0, Math.sin(angleA), 0,
-    Math.sin(angleA) * Math.cos(angleB), Math.cos(angleB), -Math.cos(angleA) * Math.cos(angleB), 0,
-    -Math.sin(angleA) * Math.sin(angleB), Math.sin(angleB), Math.cos(angleA) * Math.sin(angleB), 0,
-    0, 0, 0, 1
-  ]);
 
-}
 function quaternionMatrix(x, y, z, angle) {
   let qx = x * Math.sin(angle / 2);
   let qy = y * Math.sin(angle / 2);
