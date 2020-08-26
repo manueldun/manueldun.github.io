@@ -142,7 +142,7 @@ function animar() {
   var success = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
 
   if (!success) {
-    console.log(gl.getShaderInfoLog(vertexShader));
+    //console.log(gl.getShaderInfoLog(vertexShader));
     gl.deleteShader(vertexShader);
     return;
   }
@@ -162,7 +162,7 @@ function animar() {
   var success = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
 
   if (!success) {
-    console.log(gl.getShaderInfoLog(fragmentShader));
+    //console.log(gl.getShaderInfoLog(fragmentShader));
     gl.deleteShader(fragmentShader);
     return;
   }
@@ -174,7 +174,7 @@ function animar() {
   var success = gl.getProgramParameter(program, gl.LINK_STATUS);
 
   if (!success) {
-    console.log(gl.getProgramInfoLog(program));
+    //console.log(gl.getProgramInfoLog(program));
     gl.deleteProgram(program);
     return;
   }
@@ -211,7 +211,6 @@ function animar() {
       oneBuffers.push(await getBinaryFile("/assets/", oneBufferUris[i]));
     }
 
-    console.log(oneObject);
 
 
     gl.clearColor(0.004, 0.055, 0, 1);
@@ -231,11 +230,9 @@ function animar() {
 
     let offsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].indices].byteOffset;
     let sizezero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].indices].byteLength;
-    console.log(offsetzero);
-    console.log(sizezero);
+ 
     const indexBufferzeroSlice = zeroBuffers[0].slice(offsetzero, offsetzero + sizezero);
 
-    console.log(new Uint16Array(indexBufferzeroSlice));
 
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexBufferzeroSlice, gl.STATIC_DRAW);
 
@@ -258,7 +255,6 @@ function animar() {
     let offsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteOffset;
     let sizeone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteLength;
     const indexBufferoneSlice = oneBuffers[0].slice(offsetone, offsetone + sizeone);
-    console.log(new Uint16Array(indexBufferoneSlice));
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexBufferoneSlice, gl.STATIC_DRAW);
 
     let digits = [];
