@@ -92,19 +92,22 @@ class Digit3D {
     this.position[1] += this.speed[1] * delta * 0.0001;
     this.position[2] += this.speed[2] * delta * 0.0001;
 
-
-    if (this.position[0] >= 1.2) {
-      this.position[0] = -1.2;
-    } else if (this.position[0] <= -1.2) {
-      this.position[0] = 1.2;
+    while (this.position[0] >= 1.2 && this.speed[0] > 0) {
+      this.position[0] += -2.4;
     }
 
-    if (this.position[1] >= 1.2) {
-      this.position[1] = -1.2;
-    } else if (this.position[1] <= -1.2) {
-      this.position[1] = 1.2;
+    while (this.position[0] <= -1.2 && this.speed[0] < 0) {
+      this.position[0] += 2.4;
     }
 
+
+    while (this.position[1] >= 1.2 && this.speed[1] > 0) {
+      this.position[1] += -2.4;
+    }
+
+    while (this.position[1] <= -1.2 && this.speed[1] < 0) {
+      this.position[1] += 2.4;
+    }
 
     return this.position;
 
@@ -230,7 +233,7 @@ function animar() {
 
     let offsetzero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].indices].byteOffset;
     let sizezero = zeroObject.bufferViews[zeroObject.meshes[0].primitives[0].indices].byteLength;
- 
+
     const indexBufferzeroSlice = zeroBuffers[0].slice(offsetzero, offsetzero + sizezero);
 
 
