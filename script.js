@@ -193,8 +193,10 @@ function animar() {
 
 
   async function loadData() {
-    const zeroObject = JSON.parse(await getStringFile("/assets/", "cero.gltf"));
-    const oneObject = JSON.parse(await getStringFile("/assets/", "uno.gltf"));
+    const ceroGLTFpromise = getStringFile("/assets/", "cero.gltf");
+    const unoGLTFpromise = getStringFile("/assets/", "uno.gltf");
+    const zeroObject = JSON.parse(await ceroGLTFpromise);
+    const oneObject = JSON.parse(await unoGLTFpromise);
 
     const zeroBufferUris = zeroObject.buffers.map((buffer) => {
       return buffer.uri;
@@ -203,15 +205,25 @@ function animar() {
       return buffer.uri;
     });
 
-    let zeroBuffers = [];
+    let zeroBufferPromises = [];
     for (let i = 0; i < zeroBufferUris.length; i++) {
-      zeroBuffers.push(await getBinaryFile("/assets/", zeroBufferUris[i]));
 
+      zeroBufferPromises.push(getBinaryFile("/assets/", zeroBufferUris[i]));
     }
 
-    let oneBuffers = [];
+    let unoBufferPromises = [];
     for (let i = 0; i < oneBufferUris.length; i++) {
-      oneBuffers.push(await getBinaryFile("/assets/", oneBufferUris[i]));
+      unoBufferPromises.push(getBinaryFile("/assets/", oneBufferUris[i]));
+    }
+
+    let zeroBuffers = [];
+    for (let i = 0; i < zeroBufferUris.length; i++) {
+      zeroBuffers.push(await zeroBufferPromises[i]);
+    }
+
+    let unoBuffers = [];
+    for (let i = 0; i < oneBufferUris.length; i++) {
+      unoBuffers.push(await unoBufferPromises);
     }
 
 
@@ -242,7 +254,7 @@ function animar() {
 
     const oneBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, oneBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, oneBuffers[0], gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, unoBuffers[0], gl.STATIC_DRAW);
 
 
     gl.enableVertexAttribArray(positionAttributeLocation);
@@ -257,7 +269,7 @@ function animar() {
 
     let offsetone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteOffset;
     let sizeone = oneObject.bufferViews[oneObject.meshes[0].primitives[0].indices].byteLength;
-    const indexBufferoneSlice = oneBuffers[0].slice(offsetone, offsetone + sizeone);
+    const indexBufferoneSlice = unoBuffers[0].slice(offsetone, offsetone + sizeone);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexBufferoneSlice, gl.STATIC_DRAW);
 
     let digits = [];
