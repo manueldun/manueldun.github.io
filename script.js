@@ -368,6 +368,8 @@ function animar() {
       }
       window.requestAnimationFrame(update);
     };
+
+    document.getElementById("pantalla-negra").style.animationPlayState = "running";
     update();
   };
 
