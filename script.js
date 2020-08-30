@@ -223,7 +223,7 @@ function animar() {
 
     let unoBuffers = [];
     for (let i = 0; i < oneBufferUris.length; i++) {
-      unoBuffers.push(await unoBufferPromises);
+      unoBuffers.push(await unoBufferPromises[i]);
     }
 
 
