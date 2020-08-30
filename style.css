@@ -86,31 +86,33 @@ main h1 {
   height: 100vh;
 }
 
-#animation {
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 80vh;
-  z-index: 1;
-}
+
 #pantalla-negra {
   display: block;
   position: absolute;
   width: 100%;
   height: 80vh;
-  z-index: 2;
   background-color: rgba(1, 14, 0,255);
   animation: 1s linear 0s 1 normal forwards paused fade;
 
 }
+#foto{
+  z-index: 3;
+}
+#sobre-mi{
+  z-index: 3;
+}
+#pantalla-negra{
+  z-index: 2;
+}
+#animation {
+  z-index: 1;
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 80vh;
+}
 @keyframes fade { from {background-color: rgba(1, 14, 0,255); } to {background-color: rgba(1, 14, 0,0); }  }
-#articulo-de-entrada img {
-  z-index: 3;
-}
-
-#sobre-mi {
-  z-index: 3;
-}
 
 @media only screen and (max-width:900px) {
   .articulo {
@@ -129,7 +131,6 @@ main h1 {
     padding: 0em 0em;
   }
   #articulo-de-entrada img {
-    z-index: 2;
     width: 200px;
     height: 200px;
   }
