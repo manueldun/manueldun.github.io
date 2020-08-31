@@ -30,11 +30,6 @@ header {
 
 }
 
-header * {
-  padding: 1em;
-  font-size: 20px;
-  ;
-}
 
 article {
   height: 100vh;
@@ -64,15 +59,16 @@ main h1 {
   margin: 0;
   padding: 0.5em 0;
 }
-
-.imagen {
+#titulo{
+  font-size: medium;
+  padding:1em;
+}
+#foto {
   margin: 2em;
   border-radius: 100%;
   border-width: 0.5em;
   border-color: #337d40;
   border-style: solid;
-
-
 }
 
 .texto {
@@ -97,7 +93,7 @@ main h1 {
 
 }
 #foto{
-  z-index: 3;
+  z-index: 3; 
 }
 #sobre-mi{
   z-index: 3;
@@ -114,7 +110,15 @@ main h1 {
 }
 @keyframes fade { from {background-color: rgba(1, 14, 0,255); } to {background-color: rgba(1, 14, 0,0); }  }
 
-@media only screen and (max-width:900px) {
+@media (max-width:900px) {
+  *{
+    font-size: x-small;
+  }
+  #logo-udo{
+    width:50px;
+    height:50px;
+    padding: 1em;
+  }
   .articulo {
     display: flex;
     flex-direction: column;
@@ -127,12 +131,11 @@ main h1 {
     text-align: center;
   }
   #sobre-mi{
-    font-size: 12px;
-    padding: 0em 0em;
+    padding: 2em;
   }
-  #articulo-de-entrada img {
-    width: 200px;
-    height: 200px;
+  #foto {
+    height:9em;
+    width:9em;
   }
   .texto {
     padding: 1em 2em;
