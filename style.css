@@ -64,7 +64,7 @@ main h1 {
   padding:1em;
 }
 #foto {
-  margin: 2em;
+  margin: 1em;
   border-radius: 100%;
   border-width: 0.5em;
   border-color: #337d40;
@@ -131,11 +131,11 @@ main h1 {
     text-align: center;
   }
   #sobre-mi{
-    padding: 2em;
+    padding: 1em;
   }
   #foto {
-    height:9em;
-    width:9em;
+    height:12em;
+    width:12em;
   }
   .texto {
     padding: 1em 2em;
