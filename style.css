@@ -36,7 +36,7 @@ article {
 }
 
 a {
-  color: #e6ffef
+  color: #ffffff
 }
 
 #articulo-de-entrada {
@@ -73,6 +73,11 @@ main h1 {
   max-width: 30em;
 }
 
+#react {
+  background-color: #fff7e6;
+  color: #010e00;
+  height: 100vh;
+}
 #webgl {
   background-color: #e6ffef;
   color: #010e00;
