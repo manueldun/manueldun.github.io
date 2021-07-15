@@ -62,7 +62,6 @@ function quaternionMatrix(x, y, z, angle) {
   ]);
 }
 
-//privates
 
 class Digit3D {
   constructor() {
@@ -113,18 +112,46 @@ class Digit3D {
 
   }
 }
-function animar() {
-  const canvas = document.getElementById("animation");
-  const gl = canvas.getContext("webgl");
-  if (!gl) {
+//comple and link glsl shaders
+function compileShaders(gl, vertexShaderSource, fragmentShaderSource) {
+  var vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vertexShader, vertexShaderSource);
+  gl.compileShader(vertexShader);
+  var success = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
+
+  if (!success) {
+    console.log(gl.getShaderInfoLog(vertexShader));
+    gl.deleteShader(vertexShader);
+    return;
+  }
+  var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+  gl.shaderSource(fragmentShader, fragmentShaderSource);
+  gl.compileShader(fragmentShader);
+  var success = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
+
+  if (!success) {
+    console.log(gl.getShaderInfoLog(fragmentShader));
+    gl.deleteShader(fragmentShader);
     return;
   }
 
-  gl.enable(gl.DEPTH_TEST);
-  canvas.width = canvas.clientWidth;
-  canvas.height = canvas.clientHeight;
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+  const program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  var success = gl.getProgramParameter(program, gl.LINK_STATUS);
 
+  if (!success) {
+    console.log(gl.getProgramInfoLog(program));
+    gl.deleteProgram(program);
+    return;
+  }
+  gl.deleteShader(vertexShader);
+  gl.deleteShader(fragmentShader);
+  return program;
+}
+//loads digits 3d model and return a functions that draws it
+function initDigits(gl, canvas) {
 
   const vertexShaderSource =
     `attribute vec3 a_position;
@@ -139,16 +166,7 @@ function animar() {
         gl_Position=(u_rotationMatrix*vec4(((a_position)*0.3),1.0))*vec4(u_aspectRatio,1.0,1.0,1.0)+vec4(u_objectPosition,0.0);
     }`;
 
-  var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-  gl.shaderSource(vertexShader, vertexShaderSource);
-  gl.compileShader(vertexShader);
-  var success = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
 
-  if (!success) {
-    //console.log(gl.getShaderInfoLog(vertexShader));
-    gl.deleteShader(vertexShader);
-    return;
-  }
 
   const fragmentShaderSource =
     `precision mediump float;
@@ -159,30 +177,7 @@ function animar() {
         gl_FragColor = vec4((vec3(0.2, 0.5, 0.25)*0.5)*dot(v_normal,lightDirection)+vec3(0.2, 0.5, 0.25)*0.5,1.0);
     }`;
 
-  var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-  gl.shaderSource(fragmentShader, fragmentShaderSource);
-  gl.compileShader(fragmentShader);
-  var success = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
-
-  if (!success) {
-    //console.log(gl.getShaderInfoLog(fragmentShader));
-    gl.deleteShader(fragmentShader);
-    return;
-  }
-
-  const program = gl.createProgram();
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program);
-  var success = gl.getProgramParameter(program, gl.LINK_STATUS);
-
-  if (!success) {
-    //console.log(gl.getProgramInfoLog(program));
-    gl.deleteProgram(program);
-    return;
-  }
-  gl.deleteShader(vertexShader);
-  gl.deleteShader(fragmentShader);
+  const program = compileShaders(gl, vertexShaderSource, fragmentShaderSource);
 
   let positionAttributeLocation = gl.getAttribLocation(program, "a_position");
   let normalAttributeLocation = gl.getAttribLocation(program, "a_normal");
@@ -192,7 +187,7 @@ function animar() {
   let objecPositionUniform = gl.getUniformLocation(program, "u_objectPosition");
 
 
-  async function loadData() {
+  return (async function loadData() {
     const ceroGLTFpromise = getStringFile("/assets/", "cero.gltf");
     const unoGLTFpromise = getStringFile("/assets/", "uno.gltf");
     const zeroObject = JSON.parse(await ceroGLTFpromise);
@@ -233,11 +228,6 @@ function animar() {
     let zeroBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, zeroBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, zeroBuffers[0], gl.STATIC_DRAW);
-
-
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    gl.enableVertexAttribArray(normalAttributeLocation);
-
 
 
     const indexBufferzero = gl.createBuffer()
@@ -378,14 +368,89 @@ function animar() {
         }
 
       }
-      window.requestAnimationFrame(update);
     };
+    return update;
+  })();
 
-    document.getElementById("pantalla-negra").style.animationPlayState = "running";
-    update();
+}
+function drawToScreenInit(gl, texture) {
+  const vertexShaderSource =
+    `
+  attribute vec2 a_position;
+  void main()
+  {
+   
+      gl_Position=vec4(a_position,0.0,1.0);
+    
+  }`;
+
+
+
+  const fragmentShaderSource =
+    `precision mediump float;
+  void main()
+  {
+      gl_FragColor = vec4(0.0,1.0,0.0,1.0);
+  }`;
+  const screenTrianglebuffer = new Float32Array(
+    [-1.0, -1.0,
+    -1.0, 2.0,
+      2.0, -1.0,
+    ]);
+  const program = compileShaders(gl, vertexShaderSource, fragmentShaderSource);
+
+
+  let positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+  gl.enableVertexAttribArray(positionAttributeLocation);
+
+  let triangleGLBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, triangleGLBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, screenTrianglebuffer, gl.STATIC_DRAW);
+
+  return function () {
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindBuffer(gl.ARRAY_BUFFER, triangleGLBuffer);
+    const positionSize = 2;
+    const positionType = gl.FLOAT;
+    const positionNormalize = false;
+    const positionStride = 0;
+    const positionOffset = 0;
+    gl.vertexAttribPointer(
+      positionAttributeLocation,
+      positionSize,
+      positionType,
+      positionNormalize,
+      positionStride,
+      positionOffset
+    );
+    gl.enableVertexAttribArray(positionAttributeLocation);
+    gl.useProgram(program);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
+}
+async function animar() {
+  const canvas = document.getElementById("animation");
+  const gl = canvas.getContext("webgl");
+  if (!gl) {
+    return;
+  }
 
-  loadData();
+  gl.enable(gl.DEPTH_TEST);
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+  const drawDigits = await initDigits(gl, canvas);
+  const drawScreen = drawToScreenInit(gl);
+  function update() {
+    drawDigits();
+    //drawScreen();
+    window.requestAnimationFrame(update);
+  }
+
+  document.getElementById("pantalla-negra").style.animationPlayState = "running";
+  update();
+
 };
 window.onload = animar;
 
