@@ -112,7 +112,7 @@ class Digit3D {
 
   }
 }
-//comple and link glsl shaders
+//compile and link glsl shaders
 function compileShaders(gl, vertexShaderSource, fragmentShaderSource) {
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, vertexShaderSource);
@@ -187,7 +187,7 @@ function initDigits(gl, canvas) {
   let objecPositionUniform = gl.getUniformLocation(program, "u_objectPosition");
 
 
-  return (async function loadData() {
+  async function loadData() {
     const ceroGLTFpromise = getStringFile("/assets/", "cero.gltf");
     const unoGLTFpromise = getStringFile("/assets/", "uno.gltf");
     const zeroObject = JSON.parse(await ceroGLTFpromise);
@@ -223,7 +223,6 @@ function initDigits(gl, canvas) {
 
 
 
-    gl.clearColor(0.004, 0.055, 0, 1);
 
     let zeroBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, zeroBuffer);
@@ -268,11 +267,11 @@ function initDigits(gl, canvas) {
       digits.push(new Digit3D());
 
     }
+    gl.bindBuffer(gl.ARRAY_BUFFER,null);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,null);
+    return () => {
 
-    const update = () => {
-
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+      gl.enable(gl.DEPTH_TEST);
       gl.useProgram(program);
 
       gl.uniform1f(aspectRatioUniform, canvas.clientHeight / canvas.clientWidth);
@@ -366,25 +365,21 @@ function initDigits(gl, canvas) {
           gl.drawElements(primitiveType, count, indexType, offset);
 
         }
-
+        
       }
     };
-    return update;
-  })();
+  };
+  return loadData();
 
 }
-function drawToScreenInit(gl, texture) {
+function drawToScreenInit(gl) {
   const vertexShaderSource =
     `
   attribute vec2 a_position;
   void main()
   {
-   
       gl_Position=vec4(a_position,0.0,1.0);
-    
   }`;
-
-
 
   const fragmentShaderSource =
     `precision mediump float;
@@ -392,23 +387,25 @@ function drawToScreenInit(gl, texture) {
   {
       gl_FragColor = vec4(0.0,1.0,0.0,1.0);
   }`;
-  const screenTrianglebuffer = new Float32Array(
-    [-1.0, -1.0,
-    -1.0, 2.0,
-      2.0, -1.0,
-    ]);
   const program = compileShaders(gl, vertexShaderSource, fragmentShaderSource);
 
 
   let positionAttributeLocation = gl.getAttribLocation(program, "a_position");
   gl.enableVertexAttribArray(positionAttributeLocation);
 
+  const screenTrianglebuffer = new Float32Array(
+    [ -1.0, -1.0,
+      -1.0, 2.0+Math.sin(45)*2.0,
+      2.0+Math.sin(45)*2.0, -1.0,
+    ]);
+
   let triangleGLBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, triangleGLBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, screenTrianglebuffer, gl.STATIC_DRAW);
 
   return function () {
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    
+  gl.disable(gl.DEPTH_TEST);
     gl.bindBuffer(gl.ARRAY_BUFFER, triangleGLBuffer);
     const positionSize = 2;
     const positionType = gl.FLOAT;
@@ -440,11 +437,14 @@ async function animar() {
   canvas.height = canvas.clientHeight;
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
+  gl.clearColor(0.004, 0.055, 0, 1);
   const drawDigits = await initDigits(gl, canvas);
   const drawScreen = drawToScreenInit(gl);
   function update() {
-    drawDigits();
+    
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     //drawScreen();
+    drawDigits();
     window.requestAnimationFrame(update);
   }
 
