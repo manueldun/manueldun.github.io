@@ -111,7 +111,7 @@ function initDigits(gl, canvas) {
   
       let digits = [];
   
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 60; i++) {
         digits.push(new Digit3D());
   
       }

@@ -15,10 +15,51 @@ async function animar() {
   gl.clearColor(0.004, 0.055, 0, 1);
   const drawDigits = await initDigits(gl, canvas);
   const drawScreen = drawToScreenInit(gl);
+  const textureCanvas = createCanvasTexture(gl, canvas);
+  const frameBuffer = createFramebuffer(gl, canvas, textureCanvas);
+  const textureBlur1 = createCanvasTexture(gl, canvas);
+  const frameBufferBlur = createFramebuffer(gl, canvas, textureBlur1);
   function update() {
-    
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    drawScreen();
+    drawDigits();
+    
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
+    
+    drawScreen(textureCanvas, canvas,true);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+
+    drawScreen(textureBlur1 , canvas, false);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
+    
+    drawScreen(textureCanvas, canvas,true);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+
+    drawScreen(textureBlur1 , canvas, false);
+    
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
+    
+    drawScreen(textureCanvas, canvas,true);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+
+    drawScreen(textureBlur1 , canvas, false);
+    
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
+    
+    drawScreen(textureCanvas, canvas,true);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+
+    drawScreen(textureBlur1 , canvas, false);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    drawScreen(textureCanvas , canvas);
     drawDigits();
     window.requestAnimationFrame(update);
   }
