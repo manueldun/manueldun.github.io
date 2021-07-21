@@ -32,31 +32,6 @@ async function animar() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
 
     drawScreen(textureBlur1 , canvas, false);
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
-    
-    drawScreen(textureCanvas, canvas,true);
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
-
-    drawScreen(textureBlur1 , canvas, false);
-    
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
-    
-    drawScreen(textureCanvas, canvas,true);
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
-
-    drawScreen(textureBlur1 , canvas, false);
-    
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
-    
-    drawScreen(textureCanvas, canvas,true);
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
-
-    drawScreen(textureBlur1 , canvas, false);
-
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     drawScreen(textureCanvas , canvas);
