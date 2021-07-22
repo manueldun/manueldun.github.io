@@ -1,7 +1,7 @@
 function createCanvasTexture(gl,canvas)
 {
-    const targetTextureWidth = canvas.width;
-    const targetTextureHeight = canvas.height;
+    const targetTextureWidth = 512.0;
+    const targetTextureHeight = (canvas.width/canvas.height)*512.0;
     const targetTexture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, targetTexture);
 
@@ -17,7 +17,8 @@ function createCanvasTexture(gl,canvas)
             targetTextureWidth, targetTextureHeight, border,
             format, type, data);
 
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
@@ -27,8 +28,8 @@ function createCanvasTexture(gl,canvas)
 
 }
 function createFramebuffer(gl, canvas,targetTexture) {
-    const targetTextureWidth = canvas.width;
-    const targetTextureHeight = canvas.height;
+    const targetTextureWidth = 512.0;
+    const targetTextureHeight = (canvas.width/canvas.height)*512.0;
     const fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
 

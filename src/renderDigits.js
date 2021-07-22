@@ -1,5 +1,5 @@
 //loads digits 3d model and return a functions that draws it
-function initDigits(gl, canvas) {
+function initDigits(gl) {
 
     const vertexShaderSource =
       `attribute vec3 a_position;
@@ -117,12 +117,12 @@ function initDigits(gl, canvas) {
       }
       gl.bindBuffer(gl.ARRAY_BUFFER,null);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,null);
-      return () => {
+      return (width,height) => {
   
         gl.enable(gl.DEPTH_TEST);
         gl.useProgram(program);
   
-        gl.uniform1f(aspectRatioUniform, canvas.clientHeight / canvas.clientWidth);
+        gl.uniform1f(aspectRatioUniform, width / height);
         for (const digit of digits) {
           gl.uniform3fv(objecPositionUniform, digit.getPosition(Date.now()));
   

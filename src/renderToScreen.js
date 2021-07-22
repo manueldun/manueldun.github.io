@@ -13,7 +13,7 @@ function drawToScreenInit(gl) {
         `precision mediump float;
     uniform sampler2D u_texture;
     uniform vec2 u_canvasSize;
-    uniform bool u_horizontal;
+    uniform int u_axis;
     void main()
     {
         vec2 screenCoord = gl_FragCoord.rg/u_canvasSize;
@@ -25,7 +25,7 @@ function drawToScreenInit(gl) {
         weight[3]=0.054054;
         weight[4]=0.016216;
         vec3 result = texture2D(u_texture, gl_FragCoord.rg/u_canvasSize).rgb * weight[0]; // current fragment's contribution
-        if(u_horizontal)
+        if(u_axis==0)
         {
             for(int i = 1; i < 5; ++i)
             {
@@ -33,13 +33,16 @@ function drawToScreenInit(gl) {
                 result += texture2D(u_texture, (gl_FragCoord.rg - vec2( i, 0.0))/u_canvasSize).rgb * weight[i];
             }
         }
-        else
+        else if(u_axis==1)
         {
             for(int i = 1; i < 5; ++i)
             {
                 result += texture2D(u_texture, (gl_FragCoord.rg + vec2(0.0, i))/u_canvasSize).rgb * weight[i];
                 result += texture2D(u_texture, (gl_FragCoord.rg - vec2(0.0, i))/u_canvasSize).rgb * weight[i];
             }
+        }
+        else{
+            result = texture2D(u_texture, gl_FragCoord.rg/u_canvasSize).rgb;
         }
         
         gl_FragColor = vec4(result,1.0);
@@ -62,9 +65,9 @@ function drawToScreenInit(gl) {
 
     gl.useProgram(program);
     var textureLocation = gl.getUniformLocation(program, "u_texture");
-    var horizontalLocation = gl.getUniformLocation(program, "u_horizontal");
+    var axisLocation = gl.getUniformLocation(program, "u_axis");
     var canvasSizeLocation = gl.getUniformLocation(program, "u_canvasSize");
-    return function (texture,canvas,horizontal) {
+    return function (texture,width,height,axis) {
 
         gl.disable(gl.DEPTH_TEST);
         gl.bindBuffer(gl.ARRAY_BUFFER, triangleGLBuffer);
@@ -85,13 +88,18 @@ function drawToScreenInit(gl) {
         gl.useProgram(program);
 
         gl.uniform1i(textureLocation, 0);
-        gl.uniform2f(canvasSizeLocation, canvas.width, canvas.height);
-        if(horizontal)
+        gl.uniform2f(canvasSizeLocation, width, height);
+        if(axis==="horizontal")
         {
-            gl.uniform1i(horizontalLocation, 0);
+            gl.uniform1i(axisLocation, 0);
         }
-        else{
-            gl.uniform1i(horizontalLocation, 1);
+        else if(axis==="vertical")
+        {
+            gl.uniform1i(axisLocation, 1);
+        }
+        else
+        {
+            gl.uniform1i(axisLocation, 2);
         }
         gl.bindTexture(gl.TEXTURE_2D,texture);
         gl.drawArrays(gl.TRIANGLES, 0, 3);

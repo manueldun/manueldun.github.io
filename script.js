@@ -22,20 +22,27 @@ async function animar() {
   function update() {
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+
+    const viewportWidth = 512.0;
+    const viewportHeight = (canvas.width / canvas.height) * 512.0;
+    gl.viewport(0.0, 0.0, viewportWidth, viewportHeight);
+
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    drawDigits();
-    
+    drawDigits(viewportWidth, viewportHeight);
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
-    
-    drawScreen(textureCanvas, canvas,true);
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+    drawScreen(textureCanvas, viewportWidth, viewportHeight, "horizontal");
 
-    drawScreen(textureBlur1 , canvas, false);
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-    drawScreen(textureCanvas , canvas);
-    drawDigits();
+    const viewportWidth2 = canvas.width;
+    const viewportHeight2 = canvas.height;
+    drawScreen(textureBlur1, viewportWidth2, viewportHeight2, canvas, "none");
+    gl.viewport(0.0, 0.0, viewportWidth2, viewportHeight2);
+    drawDigits(viewportHeight2, viewportWidth2)
+
     window.requestAnimationFrame(update);
   }
 
