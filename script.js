@@ -20,7 +20,7 @@ async function animar() {
   const textureBlur1 = createCanvasTexture(gl, canvas);
   const frameBufferBlur = createFramebuffer(gl, canvas, textureBlur1);
   function update() {
-
+/*
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
 
     const viewportWidth = 512.0;
@@ -34,12 +34,14 @@ async function animar() {
 
     drawScreen(textureCanvas, viewportWidth, viewportHeight, "horizontal");
 
+*/
 
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     const viewportWidth2 = canvas.width;
     const viewportHeight2 = canvas.height;
-    drawScreen(textureBlur1, viewportWidth2, viewportHeight2, canvas, "none");
+    //drawScreen(textureBlur1, viewportWidth2, viewportHeight2, canvas, "none");
     gl.viewport(0.0, 0.0, viewportWidth2, viewportHeight2);
     drawDigits(viewportHeight2, viewportWidth2)
 
