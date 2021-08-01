@@ -122,7 +122,7 @@ function initDigits(gl) {
         gl.enable(gl.DEPTH_TEST);
         gl.useProgram(program);
   
-        gl.uniform1f(aspectRatioUniform, width / height);
+        gl.uniform1f(aspectRatioUniform, height / width);
         for (const digit of digits) {
           gl.uniform3fv(objecPositionUniform, digit.getPosition(Date.now()));
   

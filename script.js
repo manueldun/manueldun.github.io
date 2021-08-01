@@ -20,30 +20,28 @@ async function animar() {
   const textureBlur1 = createCanvasTexture(gl, canvas);
   const frameBufferBlur = createFramebuffer(gl, canvas, textureBlur1);
   function update() {
-/*
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
 
-    const viewportWidth = 512.0;
-    const viewportHeight = (canvas.width / canvas.height) * 512.0;
+    const viewportWidth = (canvas.width / canvas.height) * 128.0;
+    const viewportHeight = 128.0;
     gl.viewport(0.0, 0.0, viewportWidth, viewportHeight);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     drawDigits(viewportWidth, viewportHeight);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBufferBlur);
-
     drawScreen(textureCanvas, viewportWidth, viewportHeight, "horizontal");
 
-*/
+    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
+    drawScreen(textureBlur1, viewportWidth, viewportHeight, "vertical");
 
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-    const viewportWidth2 = canvas.width;
-    const viewportHeight2 = canvas.height;
-    //drawScreen(textureBlur1, viewportWidth2, viewportHeight2, canvas, "none");
-    gl.viewport(0.0, 0.0, viewportWidth2, viewportHeight2);
-    drawDigits(viewportHeight2, viewportWidth2)
+    gl.viewport(0.0, 0.0, canvas.width, canvas.height);
+    drawScreen(textureCanvas, canvas.width, canvas.height, "none");
+    //gl.viewport(0.0, 0.0, canvas.width, canvas.height);
+    drawDigits(canvas.width, canvas.height)
 
     window.requestAnimationFrame(update);
   }

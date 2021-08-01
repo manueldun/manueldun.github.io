@@ -16,7 +16,7 @@ function drawToScreenInit(gl) {
     uniform int u_axis;
     void main()
     {
-        vec2 screenCoord = gl_FragCoord.rg/u_canvasSize;
+        vec2 screenCoord = vec2(gl_FragCoord.r,-(gl_FragCoord.g+u_canvasSize.g))/u_canvasSize;
 
         float weight[5];
         weight[0]=0.227027;
@@ -24,25 +24,26 @@ function drawToScreenInit(gl) {
         weight[2]=0.1216216;
         weight[3]=0.054054;
         weight[4]=0.016216;
-        vec3 result = texture2D(u_texture, gl_FragCoord.rg/u_canvasSize).rgb * weight[0]; // current fragment's contribution
+        vec3 result = vec3(texture2D(u_texture, gl_FragCoord.rg / u_canvasSize)) * weight[0]; // current fragment's contribution
         if(u_axis==0)
         {
             for(int i = 1; i < 5; ++i)
             {
-                result += texture2D(u_texture, (gl_FragCoord.rg + vec2( i, 0.0))/u_canvasSize).rgb * weight[i];
-                result += texture2D(u_texture, (gl_FragCoord.rg - vec2( i, 0.0))/u_canvasSize).rgb * weight[i];
+                result += texture2D(u_texture,(gl_FragCoord.rg + vec2(i,0.0)) / (u_canvasSize)).rgb * weight[i];
+                result += texture2D(u_texture,(gl_FragCoord.rg - vec2(i,0.0)) / (u_canvasSize)).rgb * weight[i];
             }
         }
         else if(u_axis==1)
         {
             for(int i = 1; i < 5; ++i)
             {
-                result += texture2D(u_texture, (gl_FragCoord.rg + vec2(0.0, i))/u_canvasSize).rgb * weight[i];
-                result += texture2D(u_texture, (gl_FragCoord.rg - vec2(0.0, i))/u_canvasSize).rgb * weight[i];
+
+                result += texture2D(u_texture, (gl_FragCoord.rg + vec2(0.0,i)) / (u_canvasSize)).rgb * weight[i];
+                result += texture2D(u_texture, (gl_FragCoord.rg - vec2(0.0,i)) / (u_canvasSize)).rgb * weight[i];
             }
         }
-        else{
-            result = texture2D(u_texture, gl_FragCoord.rg/u_canvasSize).rgb;
+        else if(u_axis==2){
+            result = texture2D(u_texture, gl_FragCoord.rg/(u_canvasSize)).rgb;
         }
         
         gl_FragColor = vec4(result,1.0);
