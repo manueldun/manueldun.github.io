@@ -70,7 +70,7 @@ function initDigits(gl) {
       }
   
   
-  
+      
   
       let zeroBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, zeroBuffer);
@@ -215,6 +215,7 @@ function initDigits(gl) {
           }
           
         }
+        return {zeroBuffers,unoBuffers};
       };
     };
     return loadData();

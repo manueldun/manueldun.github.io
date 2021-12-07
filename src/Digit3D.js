@@ -2,7 +2,7 @@
 class Digit3D {
     constructor() {
       this.digit = Math.floor(Math.random() * Math.floor(2));
-      this.position = [Math.random() * 2 - 1, Math.random() * 2 - 1, 0];
+      this.position = [Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1];
       this.rotationAxis = [Math.random(), Math.random(), Math.random()];
       const length = Math.sqrt(
         this.rotationAxis[0] * this.rotationAxis[0] +

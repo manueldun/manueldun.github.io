@@ -19,6 +19,7 @@ async function animar() {
   const frameBuffer = createFramebuffer(gl, canvas, textureCanvas);
   const textureBlur1 = createCanvasTexture(gl, canvas);
   const frameBufferBlur = createFramebuffer(gl, canvas, textureBlur1);
+  const drawLightning = initLightning(gl,[-0.25,0.25,0],[0.25,0.4,0]);
   function update() {
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
@@ -42,7 +43,7 @@ async function animar() {
     drawScreen(textureCanvas, canvas.width, canvas.height, "none");
     //gl.viewport(0.0, 0.0, canvas.width, canvas.height);
     drawDigits(canvas.width, canvas.height)
-
+    drawLightning();
     window.requestAnimationFrame(update);
   }
 
