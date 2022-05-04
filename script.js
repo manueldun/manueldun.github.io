@@ -44,7 +44,7 @@ async function animar() {
         drawScreen(textureCanvas, canvas.width, canvas.height, "none");
         //gl.viewport(0.0, 0.0, canvas.width, canvas.height);
         drawDigits(canvas.width, canvas.height);
-        drawLightning();
+        //drawLightning();
         window.requestAnimationFrame(update);
     }
 
