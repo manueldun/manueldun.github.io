@@ -1,16 +1,12 @@
-
-
 function drawToScreenInit(gl) {
-    const vertexShaderSource =
-        `
+    const vertexShaderSource = `
     attribute vec2 a_position;
     void main()
     {
         gl_Position=vec4(a_position,0.0,1.0);
     }`;
 
-    const fragmentShaderSource =
-        `precision mediump float;
+    const fragmentShaderSource = `precision mediump float;
     uniform sampler2D u_texture;
     uniform vec2 u_canvasSize;
     uniform int u_axis;
@@ -48,17 +44,23 @@ function drawToScreenInit(gl) {
         
         gl_FragColor = vec4(result,1.0);
     }`;
-    const program = compileShaders(gl, vertexShaderSource, fragmentShaderSource);
-
+    const program = compileShaders(
+        gl,
+        vertexShaderSource,
+        fragmentShaderSource
+    );
 
     let positionAttributeLocation = gl.getAttribLocation(program, "a_position");
     gl.enableVertexAttribArray(positionAttributeLocation);
 
-    const screenTrianglebuffer = new Float32Array(
-        [-1.0, -1.0,
-        -1.0, 2.0 + Math.sin(45) * 2.0,
-        2.0 + Math.sin(45) * 2.0, -1.0,
-        ]);
+    const screenTrianglebuffer = new Float32Array([
+        -1.0,
+        -1.0,
+        -1.0,
+        2.0 + Math.sin(45) * 2.0,
+        2.0 + Math.sin(45) * 2.0,
+        -1.0,
+    ]);
 
     let triangleGLBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, triangleGLBuffer);
@@ -68,8 +70,7 @@ function drawToScreenInit(gl) {
     var textureLocation = gl.getUniformLocation(program, "u_texture");
     var axisLocation = gl.getUniformLocation(program, "u_axis");
     var canvasSizeLocation = gl.getUniformLocation(program, "u_canvasSize");
-    return function (texture,width,height,axis) {
-
+    return function (texture, width, height, axis) {
         gl.disable(gl.DEPTH_TEST);
         gl.bindBuffer(gl.ARRAY_BUFFER, triangleGLBuffer);
         const positionSize = 2;
@@ -90,19 +91,14 @@ function drawToScreenInit(gl) {
 
         gl.uniform1i(textureLocation, 0);
         gl.uniform2f(canvasSizeLocation, width, height);
-        if(axis==="horizontal")
-        {
+        if (axis === "horizontal") {
             gl.uniform1i(axisLocation, 0);
-        }
-        else if(axis==="vertical")
-        {
+        } else if (axis === "vertical") {
             gl.uniform1i(axisLocation, 1);
-        }
-        else
-        {
+        } else {
             gl.uniform1i(axisLocation, 2);
         }
-        gl.bindTexture(gl.TEXTURE_2D,texture);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
 }
