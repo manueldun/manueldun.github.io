@@ -20,13 +20,16 @@ nav {
 }
 
 header {
-  height: 20vh;
-  background-color: #337d40;
+  height: 19vh;
+  background-color: #0e1c11;
   color: #e6ffef;
   display: flex;
   align-items: center;
   align-items: center;
   justify-content: center;
+  border-bottom-color: #1b3725;
+  border-bottom-width: 1vh;
+  border-bottom-style: solid;
 
 }
 
@@ -39,11 +42,39 @@ a {
   color: #ffffff
 }
 
+.articulo img {
+  border-radius: 25px;
+  color: #cbffe6;
+}
+
+.articulo {
+  border-bottom-color: #1b3725;
+  border-bottom-width: 1vh;
+  border-bottom-style: solid;
+  background-color: #9cc1af;
+}
+
 #articulo-de-entrada {
   color: #e6ffef;
   background: transparent;
 
 
+}
+
+#webglInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#webglInfo>img {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  width: 30vw;
+  padding: 20px;
+  height: 12.52vw;
 }
 
 .articulo {
@@ -55,6 +86,8 @@ a {
 
 }
 
+
+
 main h1 {
   margin: 0;
   padding: 0.5em 0;
@@ -64,22 +97,22 @@ main h1 {
   margin: 1em;
   border-radius: 100%;
   border-width: 0.5em;
-  border-color: #337d40;
+  border-color: #0e3b25;
   border-style: solid;
 }
 
 .texto {
   padding: 2em;
-  max-width: 30em;
 }
 
 #react {
-  background-color: #fff7e6;
   color: #010e00;
+  background-color: #cad792;
   height: 100vh;
 }
+
+
 #webgl {
-  background-color: #e6ffef;
   color: #010e00;
   height: 100vh;
 }
@@ -90,19 +123,23 @@ main h1 {
   position: absolute;
   width: 100%;
   height: 80vh;
-  background-color: rgba(1, 14, 0,255);
+  background-color: rgba(1, 14, 0, 255);
   animation: 1s linear 0s 1 normal forwards paused fade;
 
 }
-#foto{
-  z-index: 3; 
-}
-#sobre-mi{
+
+#foto {
   z-index: 3;
 }
-#pantalla-negra{
+
+#sobre-mi {
+  z-index: 3;
+}
+
+#pantalla-negra {
   z-index: 2;
 }
+
 #animation {
   z-index: 1;
   display: block;
@@ -110,53 +147,95 @@ main h1 {
   width: 100%;
   height: 80vh;
 }
-@keyframes fade { from {background-color: rgba(1, 14, 0,255); } to {background-color: rgba(1, 14, 0,0); }  }
+
+.texto {
+  display: flex;
+  flex-direction: column;
+}
+
+#reactLogo {
+  width: 15vw;
+  transform: scale(1.8);
+  aspect-ratio: auto;
+  align-self: center;
+
+}
+
+@keyframes fade {
+  from {
+    background-color: rgba(1, 14, 0, 255);
+  }
+
+  to {
+    background-color: rgba(1, 14, 0, 0);
+  }
+}
 
 @media (max-aspect-ratio:1/1) {
-  #titulo{
+  #titulo {
     font-size: 3vw;
-    padding:1em;
-  }
-  *{
-    font-size: 2.5vw;
-  }
-  #logo-udo{
-    width:10vh;
-    height:10vh;
     padding: 1em;
   }
+
+  * {
+    font-size: 2.5vw;
+  }
+
+  #logo-udo {
+    width: 10vh;
+    height: 10vh;
+    padding: 1em;
+  }
+
   .articulo {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    height: 79vh;
     align-items: center;
     justify-content: center;
 
   }
-  #sobre-mi h1{
+
+  .articulo>img {
+    margin: 30px;
+    width: 70vw;
+    aspect-ratio: auto;
+    max-height: 46.55vw;
+  }
+
+  #sobre-mi h1 {
     text-align: center;
   }
-  #sobre-mi{
+
+  #sobre-mi {
     padding: 1em;
   }
+
   #foto {
-    height:12em;
-    width:12em;
+    height: 12em;
+    width: 12em;
   }
+
   .texto {
     padding: 1em 2em;
     max-width: 30em;
   }
-}
-@media (min-aspect-ratio:1/1) {
-  *{
-    font-size: 3vh;
+
+  .texto>* {
+    font-size: 2.5vw;
+
   }
-  #logo-udo{
-    width:10vh;
-    height:10vh;
+
+}
+
+@media (min-aspect-ratio:1/1) {
+
+  #logo-udo {
+    width: 10vh;
+    height: 10vh;
     padding: 1em;
   }
+
   .articulo {
     display: flex;
     flex-direction: row;
@@ -165,18 +244,33 @@ main h1 {
     justify-content: center;
 
   }
-  #sobre-mi h1{
+
+  .articulo>img {
+
+    width: 45vw;
+    aspect-ratio: auto;
+  }
+
+  #sobre-mi h1 {
     text-align: center;
   }
-  #sobre-mi{
+
+  #sobre-mi {
     padding: 1em;
   }
+
   #foto {
-    height:12em;
-    width:12em;
+    height: 12em;
+    width: 12em;
   }
+
   .texto {
     padding: 1em 2em;
-    max-width: 30em;
+    max-width: 40vw;
+  }
+
+  .texto>* {
+    font-size: 1.5vw;
+
   }
 }

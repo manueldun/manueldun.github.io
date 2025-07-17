@@ -1,61 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Mi página Github</title>
-    <link rel="stylesheet" href="normalize.css" />
-    <link rel="stylesheet" href="style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <header>
-      <img id="logo-udo" src="Logo_UDO.svg " height="100" width="100"/>
-      <div id="titulo">Computer Engineer.</div>
-    </header>
-    <main>
-      <article id="articulo-de-entrada" class="articulo">
-        <img
-          src="foto id.jpg"
-          alt="foto cara frontal"
-          width="300"
-          height="300"
-          id="foto"
-          class="imagen"
-        />
-        <div id="sobre-mi" class="texto">
-          <h1>About me</h1>
-          <p>I am a Computer Engineer.</p>
-          <p>
-            My subject of interests are Web Development, Robotics, Electronics,
-            Graphics Programming and Ai.
-          </p>
-          <p>
-            I consider myself a capable person eager to learn new things.
-          </p>
-          <p>
-            My Hobbies include studying physics,studying mathematics, creating 3d art and music.
-          </p>
-        </div>
-        
+
+<head>
+  <meta charset="utf-8" />
+  <title>My GitHub Page</title>
+  <link rel="stylesheet" href="normalize.css" />
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <header>
+    <img id="logo-udo" src="Logo_UDO.svg " height="100" width="100" />
+    <div id="titulo">Computer Engineer.</div>
+  </header>
+  <main>
+    <article id="articulo-de-entrada" class="articulo">
+      <img src="foto id.jpg" alt="foto cara frontal" width="300" height="300" id="foto" class="imagen" />
+      <div id="sobre-mi" class="texto">
+        <h1>About me</h1>
+        <p>I am a Computer Engineer.</p>
+        <p>
+          My subject of interests are Web Development, Robotics, Electronics,
+          Graphics Programming and Ai.
+        </p>
+        <p>
+          I consider myself a capable person eager to learn new things.
+        </p>
+        <p>
+          My Hobbies include studying physics,studying mathematics, creating 3d art and music.
+        </p>
+      </div>
+
       <canvas id="animation"></canvas>
       <div id="pantalla-negra"></div>
+    </article>
+    <a href="https://manueldun.github.io/ReactPortfolio/">
+      <article class="articulo" id="react">
+        <div class="texto">
+          <img id="reactLogo" src="react.svg" height="300" />
+          <h1>React Project Portfolio</h1>
+          <p>
+            A porfolio project that showcases the use of the React library, consisting on a calculator, full text movie
+            browser and a food delivery web app.
+          </p>
+        </div>
+        <img src="portfolio front page.png"></div>
       </article>
-      <a href="https://manueldun.github.io/Restaurante-React/">
-        <article class="articulo" id="react">
-          <div class="texto">
-            <h1>React Project</h1>
-            <p>
-              Project created in React that allows to buy food at delivery; only for demostration
-              pourposes.
-            </p>
-          </div>
-          <img src="restaurante.png" height="300"></div>
-        </article >
-      </a>
-      <a href="https://manueldun.github.io/webgl-demo">
-        <article class="articulo" id="webgl">
-          <img src="WebGL-logo-vector-01.svg" height="300"></div>
+    </a>
+    <a href="https://manueldun.github.io/webgl-demo">
+      <article class="articulo" id="webgl">
+        <div id="webglInfo">
+          <img src="webglLogo.png" height="300">
           <div class="texto">
             <h1>WebGL Project (50+MB)</h1>
             <p>Webgl Live demo scene.</p>
@@ -74,26 +71,27 @@
                 Normal Maps
               </li>
 
-
-            </ul>
-            
           </div>
-          <img src="https://user-images.githubusercontent.com/7586239/165565083-f87c4b43-cd72-49da-b2c9-aa3ed9d89db5.jpg" height="300"></div>
-            
-        </article >
-      </a>
+          </ul>
 
-    </main>
-    <footer></footer>
-    <script src="src/fileFetch.js"></script>
-    <script src="src/quat.js"></script>
-    <script src="src/Digit3D.js"></script>
-    <script src="src/shaders.js"></script>
-    <script src="src/renderDigits.js"></script>
-    <script src="src/createFramebuffer.js"></script>
-    <script src="src/renderToScreen.js"></script>
-    <script src="src/renderLightning.js"></script>
-    <script src="script.js"></script>
-  </body>
+        </div>
+        <img src="https://user-images.githubusercontent.com/7586239/165565083-f87c4b43-cd72-49da-b2c9-aa3ed9d89db5.jpg"
+          height="300"></div>
+
+      </article>
+    </a>
+
+  </main>
+  <footer></footer>
+  <script src="src/fileFetch.js"></script>
+  <script src="src/quat.js"></script>
+  <script src="src/Digit3D.js"></script>
+  <script src="src/shaders.js"></script>
+  <script src="src/renderDigits.js"></script>
+  <script src="src/createFramebuffer.js"></script>
+  <script src="src/renderToScreen.js"></script>
+  <script src="src/renderLightning.js"></script>
+  <script src="script.js"></script>
+</body>
 
 </html>
